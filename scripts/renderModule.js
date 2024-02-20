@@ -58,8 +58,36 @@ function renderMovie (array, container) {
     });
 }
 
-function renderMoreInfo (result) {
-    console.log(result);
+function renderMoreInfo (event, result) {
+
+    event.preventDefault();
+
+    let infoContainer = document.querySelector(`.more-info-container`);
+
+    if (infoContainer) {
+        infoContainer.remove();
+    }
+
+    else {    
+        const moreInfoContainerRef = document.createElement(`article`);
+        const mainContainerRef = document.querySelector(`main`);
+        moreInfoContainerRef.classList.add(`more-info-container`);
+        const titleRef = document.createElement(`h2`);
+        titleRef.classList.add(`more-info-container__title`)
+        titleRef.textContent = result.Title
+        moreInfoContainerRef.appendChild(titleRef);
+        const plotRef = document.createElement(`p`);
+        plotRef.classList.add(`more-info-container__plot-text`);
+        plotRef.textContent = result.Plot;
+        moreInfoContainerRef.appendChild(plotRef);
+        console.log(result);
+        mainContainerRef.appendChild(moreInfoContainerRef);
+    }
+
+    
+    
+
+
 }
 
 

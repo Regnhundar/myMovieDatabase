@@ -88,7 +88,7 @@ async function searchForMovie (event) {
 
 async function moreInfo (event) {
     const moreInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&plot=full&i=${event.currentTarget.dataset.imdbid}`);
-    console.log(moreInfo);
+    renderModule.renderMoreInfo(event, moreInfo)
 }
 
 export default {moreInfo}
