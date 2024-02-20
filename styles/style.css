@@ -139,13 +139,17 @@ h2 {
     display: grid;
     gap: 2rem;
     grid-template-columns: repeat(4, 1fr);
-
 }
+
 .top-twenty-section__title {
     grid-area: auto / auto / auto / span 4;
 }
+
 .top-twenty-section__movie-container,
 .search-result-section__movie-container {
+    display: grid;
+    grid-template-rows: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     background-color: var(--white);
     padding: 1rem;
     border-radius: .5rem;
@@ -160,18 +164,23 @@ h2 {
 
 .top-twenty-section__movie-title,
 .search-result-section__movie-title {
+    grid-area: auto /auto / span 1 / span 2;
     font-weight: 700;
     padding: 1rem 0 .5rem 0;
-}
-
-.d-none {
-    display: none;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .search-result-section__image,
 .top-twenty-section__image {
     width: 100%;
+    grid-area: auto / auto / span 4/ span 2;
     pointer-events: none;
+}
+
+.d-none {
+    display: none;
 }
 
 @media screen and (max-width: 1200px){

@@ -42,7 +42,7 @@ function renderMovie (array, container) {
         let figureRef = document.createElement(`figure`);
         figureRef.addEventListener(`click`, script.moreInfo);
         figureRef.classList.add(`${container}-section__movie-container`);
-        figureRef.dataset.moreInfo = movie.imdbid;
+        figureRef.dataset.imdbid = movie.imdbid;
         let imgRef = document.createElement(`img`);
         imgRef.classList.add(`${container}-section__image`)
         imgRef.src = `${movie.poster}`;

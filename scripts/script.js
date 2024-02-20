@@ -59,7 +59,7 @@ async function searchForMovie (event) {
         const data = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&s=${searchWord}`);
 
 
-        if(searchBarRef.value.length > 0) {
+        if (searchBarRef.value.length > 0) {
             // Nycklarna i omdbapi är inte i gemener vilket movies.json är. För att kunna rendera med samma funktion gör jag om nycklarna till gemener.
             data.Search.forEach(movie => {
                 const standardizedMovie = {};
@@ -87,12 +87,8 @@ async function searchForMovie (event) {
 }
 
 async function moreInfo (event) {
-
-    const data = await apiModule.getData(`http://www.omdbapi.com/?t=${event.target.closest(`figure`).querySelector(`figcaption`).textContent}&apikey=ea3e4608`);
-    const fullPlot = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&plot=full&i=${data.imdbID}`);
-    console.log(data);
-    console.log(fullPlot.Plot);
-
+    const moreInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&plot=full&i=${event.currentTarget.dataset.imdbid}`);
+    console.log(moreInfo);
 }
 
 export default {moreInfo}
