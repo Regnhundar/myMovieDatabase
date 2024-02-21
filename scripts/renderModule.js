@@ -58,8 +58,38 @@ function renderMovie (array, container) {
     });
 }
 
-function renderMoreInfo (result) {
-    console.log(result);
+function renderMoreInfo (event, result) {
+console.log(event.target);
+    event.preventDefault();
+
+    let infoContainer = document.querySelector(`.more-info-container`);
+
+    if (infoContainer) {
+        infoContainer.remove();
+    }
+
+    else {    
+        const moreInfoContainerRef = document.createElement(`article`);
+        let parentContainerRef = document.querySelector(`#topTwentySection`);
+
+        const searchResultContainer = event.target.closest('.search-result-section__movie-container');
+        if (searchResultContainer) {
+            parentContainerRef = document.querySelector('#searchResultSection');
+        }
+
+
+        moreInfoContainerRef.classList.add(`more-info-container`);
+        const titleRef = document.createElement(`h2`);
+        titleRef.classList.add(`more-info-container__title`)
+        titleRef.textContent = result.Title
+        moreInfoContainerRef.appendChild(titleRef);
+        const plotRef = document.createElement(`p`);
+        plotRef.classList.add(`more-info-container__plot-text`);
+        plotRef.textContent = result.Plot;
+        moreInfoContainerRef.appendChild(plotRef);
+        console.log(result);
+        parentContainerRef.appendChild(moreInfoContainerRef);
+    }
 }
 
 

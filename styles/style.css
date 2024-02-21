@@ -23,6 +23,7 @@ body {
     background: var(--dark);
     color: var(--cream);
     font-family: 'Josefin Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    position: relative;
     
 }
 
@@ -57,11 +58,8 @@ h2 {
     padding: 2rem;
     box-shadow:
     0 0 0 1rem var(--yellow),
-    0 0 0 2rem var(--dark), 
     0 0 0 3rem var(--orange), 
-    0 0 0 4rem var(--dark), 
     0 0 0 5rem var(--red),
-    0 0 0 6rem var(--dark),
     0 0 0 7rem var(--blue);
 }
 
@@ -70,12 +68,11 @@ h2 {
     color: var(--dark);
     border-radius: 1rem;
     padding: 2rem;
-    
 
 }
 
 .utility-bar__searchbar {
-    border: 5px solid var(--blue);
+
     background-color: var(--cream);
     padding: 1rem;
     margin-bottom: 1rem;
@@ -177,6 +174,26 @@ h2 {
     width: 100%;
     grid-area: auto / auto / span 4/ span 2;
     pointer-events: none;
+}
+
+.more-info-container {
+    position: absolute;
+    background-color: var(--dark);
+    color: var(--cream);
+    box-shadow:
+    0 0 0 1rem var(--yellow),
+    0 0 0 3rem var(--orange), 
+    0 0 0 5rem var(--red),
+    0 0 0 7rem var(--blue);
+    padding: 4rem 2rem;
+    width: 30vw;
+    border-radius: 1rem;
+    left: 35vw;
+    top: 50%;
+}
+
+.more-info-container__plot-text {
+    line-height: 1.5;
 }
 
 .d-none {
