@@ -1,11 +1,14 @@
 import apiModule from "./apiModule.js";
 import renderModule from "./renderModule.js";
+import localStorageModule from "./localStorageModule.js";
 
 
 window.addEventListener(`DOMContentLoaded`, () => {
     document.querySelector(`#searchbar`).addEventListener(`input`, searchForMovie);
+    document.querySelector(`#favoritesButton`).addEventListener(`click`, myFavoriteFunction);
     populateTrailers();
     populateTopTwenty();
+    localStorageModule.getFavorites();
     console.log(`DOMContentLoaded`); 
 });
 
@@ -86,9 +89,38 @@ async function searchForMovie (event) {
     }
 }
 
-async function moreInfo (event) {
-    const moreInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&plot=full&i=${event.currentTarget.dataset.imdbid}`);
-    renderModule.renderMoreInfo(event, moreInfo)
+function myFavoriteFunction() {
+    const buttonRef = document.querySelector(`#favoritesButton`);
+
+    if (buttonRef.textContent === `Favorites`) {
+        console.log(`Bajs`);
+    }
 }
 
-export default {moreInfo}
+async function getMoreInfo (event) {
+    console.log(`getMoreInfo: ${event.target}`);
+    try {
+        const moreInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&plot=full&i=${event.currentTarget.dataset.imdbid}`);
+        
+        renderModule.renderMoreInfo(event, moreInfo)
+    } catch (error) {
+        console.log(`Something went wrong at moreInfo: ${error}`);
+    }
+}
+
+async function sendToStorage (event) {
+    console.log(`sendToStorage: ${event.target}`);
+    event.stopPropagation(); // För att förhindra att eventlystnaren på containern också triggas 
+    try {
+
+        localStorageModule.handleStorage(event.currentTarget.dataset.imdbid);
+         
+    } catch (error) {
+        console.log(`Something went wrong at sendToStorage: ${error}`);
+    }
+
+    }
+
+
+
+export default {getMoreInfo, sendToStorage}

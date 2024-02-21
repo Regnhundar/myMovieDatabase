@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/style.css">
+    <title>Movietime</title>
+</head>
+<body>
+        <header class="header">
+            <h1 class="header__title">MovieTime</h1>
+        </header>
+
+        <div class="wrapper">
+
+            <nav class="utility-bar">
+                <input type="search" class="utility-bar__searchbar" id="searchbar" placeholder="Find a movie...">
+                <a href="index.html" class="utility-bar__favorites-navigation-element" id="favoritesButton">Home</a>
+            </nav>
+
+            <main class="main" id="main">
+
+                <section class="search-result-section d-none" id="searchResultSection"></section>
+                <section class="favorite-section" id="favoriteSection"></section>
+
+            </main>
+
+
+        </div>
+    <script type="module" src="./scripts/script.js"></script>
+</body>
+</html>
