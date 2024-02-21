@@ -59,7 +59,7 @@ function renderMovie (array, container) {
 }
 
 function renderMoreInfo (event, result) {
-
+console.log(event.target);
     event.preventDefault();
 
     let infoContainer = document.querySelector(`.more-info-container`);
@@ -70,7 +70,14 @@ function renderMoreInfo (event, result) {
 
     else {    
         const moreInfoContainerRef = document.createElement(`article`);
-        const mainContainerRef = document.querySelector(`main`);
+        let parentContainerRef = document.querySelector(`#topTwentySection`);
+
+        const searchResultContainer = event.target.closest('.search-result-section__movie-container');
+        if (searchResultContainer) {
+            parentContainerRef = document.querySelector('#searchResultSection');
+        }
+
+
         moreInfoContainerRef.classList.add(`more-info-container`);
         const titleRef = document.createElement(`h2`);
         titleRef.classList.add(`more-info-container__title`)
@@ -81,13 +88,8 @@ function renderMoreInfo (event, result) {
         plotRef.textContent = result.Plot;
         moreInfoContainerRef.appendChild(plotRef);
         console.log(result);
-        mainContainerRef.appendChild(moreInfoContainerRef);
+        parentContainerRef.appendChild(moreInfoContainerRef);
     }
-
-    
-    
-
-
 }
 
 
