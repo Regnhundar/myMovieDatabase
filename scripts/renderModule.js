@@ -40,17 +40,31 @@ function renderMovie (array, container) {
     array.forEach(movie => {
 
         let figureRef = document.createElement(`figure`);
-        figureRef.addEventListener(`click`, script.moreInfo);
+        figureRef.addEventListener(`click`, script.getMoreInfo);
+
         figureRef.classList.add(`${container}-section__movie-container`);
         figureRef.dataset.imdbid = movie.imdbid;
-        let imgRef = document.createElement(`img`);
-        imgRef.classList.add(`${container}-section__image`)
-        imgRef.src = `${movie.poster}`;
-        imgRef.alt= `Cover of the movie ${movie.title}`;
+        let posterRef = document.createElement(`img`);
+        posterRef.classList.add(`${container}-section__image`)
+        posterRef.src = `${movie.poster}`;
+        posterRef.alt= `Cover of the movie ${movie.title}`;
+        let favoriteRef = document.createElement(`img`);
+        favoriteRef.classList.add(`${container}-section__favorite-icon`, `d-none`);
+        figureRef.addEventListener(`mouseenter`, () => {
+            favoriteRef.classList.remove(`d-none`);
+        });
+        figureRef.addEventListener(`mouseleave`, () => {
+            favoriteRef.classList.add(`d-none`);
+        });
+        favoriteRef.src = `./assets/favorite.svg`;
+        favoriteRef.alt = `Add to favorites!`
+        favoriteRef.dataset.imdbid = movie.imdbid;
+        favoriteRef.addEventListener(`click`, script.sendToStorage);
         let captionRef = document.createElement(`figcaption`);
         captionRef.classList.add(`${container}-section__movie-title`);
         captionRef.textContent = movie.title;
-        figureRef.appendChild(imgRef);
+        figureRef.appendChild(posterRef);
+        figureRef.appendChild(favoriteRef);
         figureRef.appendChild(captionRef);
         sectionRef.appendChild(figureRef);
 
@@ -62,7 +76,7 @@ function renderMoreInfo (event, result) {
 console.log(event.target);
     event.preventDefault();
 
-    let infoContainer = document.querySelector(`.more-info-container`);
+    const  infoContainer = document.querySelector(`.more-info-container`);
 
     if (infoContainer) {
         infoContainer.remove();
