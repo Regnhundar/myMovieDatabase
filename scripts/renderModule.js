@@ -37,7 +37,19 @@ function nextTrailer () {
 
 function renderMovie (array, container) {
     console.log(array);
-    let sectionRef = document.querySelector(`.${container}-section`);
+
+    const mainRef = document.querySelector(`#main`);
+    
+    const  sectionContainerRef = document.querySelector(`.${container}-section`);
+
+    if (sectionContainerRef) {
+        sectionContainerRef.remove();
+    }
+    
+    let sectionRef = document.createElement(`section`);
+    sectionRef.classList.add(`${container}-section`);
+    sectionRef.id = `${container}Section`;
+    sectionRef.innerHTML = ``;
     array.forEach(movie => {
 
         let figureRef = document.createElement(`figure`);
@@ -69,14 +81,13 @@ function renderMovie (array, container) {
         let captionRef = document.createElement(`figcaption`);
         captionRef.classList.add(`${container}-section__movie-title`);
         captionRef.textContent = movie.title;
-  
-        figureRef.appendChild(posterRef);
 
+        figureRef.appendChild(posterRef);
         figureRef.appendChild(favoriteRef);
         figureRef.appendChild(captionRef);
-        console.log(`Still logging`);
         sectionRef.appendChild(figureRef);
-        console.log(`Not logging`);
+        mainRef.appendChild(sectionRef);
+
     });
 }
 

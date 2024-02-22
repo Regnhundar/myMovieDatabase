@@ -5,15 +5,20 @@ import localStorageModule from "./localStorageModule.js";
 
 window.addEventListener(`DOMContentLoaded`, () => {
     document.querySelector(`#searchbar`).addEventListener(`input`, searchForMovie);
-    document.querySelector(`#favoritesButton`).addEventListener(`click`, populateFavorites);
+
     localStorageModule.getFavorites();
     console.log(localStorageModule.getFavorites());
     if (document.querySelector(`#trailerSection`)) {
         populateTrailers();
         populateTopTwenty();
     }
+    if (document.location.pathname.endsWith("favorites.html")) {
+        console.log(`Entered favorites`);
+        populateFavorites();
+    } else {
     
     console.log(`DOMContentLoaded`); 
+    }
 });
 
 
@@ -48,7 +53,7 @@ async function populateTopTwenty () {
             topTwenty.push(movie)
         });
 
-        renderModule.renderMovie(topTwenty, `top-twenty`);
+        renderModule.renderMovie(topTwenty, `toplist`);
     } catch (error) {
         console.log(`Something went wrong at populateTopTwenty: ${error}`);
     }
@@ -74,27 +79,24 @@ async function searchForMovie (event) {
 
         let searchWord = event.target.value.toLowerCase();
         const searchBarRef = document.querySelector(`#searchbar`);
-        const searchResultContainerRef = document.querySelector(`#searchResultSection`);
-        const data = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&s=${searchWord}`);
-
 
         if (searchBarRef.value.length > 0) {
            
-     
+            const data = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&s=${searchWord}`);
             const standardizedData = standardizeApiKeys(data.Search);
 
 
-            searchResultContainerRef.innerHTML = ``;
-            document.querySelector(`#topTwentySection`).classList.add(`d-none`);
-            document.querySelector(`#trailerSection`).classList.add(`d-none`);
-            searchResultContainerRef.classList.remove(`d-none`);
 
-            renderModule.renderMovie(standardizedData, `search-result`);
+            document.querySelector(`#toplistSection`).classList.add(`d-none`);
+            document.querySelector(`#trailerSection`).classList.add(`d-none`);
+            
+
+            renderModule.renderMovie(standardizedData, `search`);
         }
         else {
-            document.querySelector(`#topTwentySection`).classList.remove(`d-none`);
+            document.querySelector(`#toplistSection`).classList.remove(`d-none`);
             document.querySelector(`#trailerSection`).classList.remove(`d-none`);
-            searchResultContainerRef.classList.add(`d-none`);
+            document.querySelector(`#searchSection`).remove();
         }
     } catch (error) {
         console.log(`Something went wrong at searchForMovie: ${error}`);
@@ -104,12 +106,12 @@ async function searchForMovie (event) {
 async function populateFavorites() {
 // OBS: sätt tillbaka href på <a> så den tar dig till favorites.html
     try {
-        const buttonRef = document.querySelector(`#favoritesButton`);
+
         const favorites = localStorageModule.getFavorites();
 
         let favoriteArray = [];
 
-        if (buttonRef.textContent === `Favorites`) {
+
             for(let i = 0; i < favorites.length; i++) {
                 let favoriteInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&i=${favorites[i].id}`);
                 favoriteArray.push(favoriteInfo);
@@ -119,7 +121,7 @@ async function populateFavorites() {
 
             renderModule.renderMovie(favoriteArray, `favorite`);
 
-        }
+        
     } catch (error) {
         console.log(`Something went wrong at populateFavorites: ${error}`);
       } 
