@@ -39,7 +39,7 @@ function renderMovie (array, container) {
     console.log(array);
 
     const mainRef = document.querySelector(`#main`);
-    
+
     const  sectionContainerRef = document.querySelector(`.${container}-section`);
 
     if (sectionContainerRef) {
@@ -102,11 +102,15 @@ function renderMoreInfo (event, result) {
 
     else {    
         const moreInfoContainerRef = document.createElement(`article`);
-        let parentContainerRef = document.querySelector(`#topTwentySection`);
+        let parentContainerRef = document.querySelector(`#toplistSection`);
 
-        const searchResultContainer = event.target.closest('.search-result-section__movie-container');
+        const searchResultContainer = event.target.closest('.search-section__movie-container');
+        const favoriteContainer = event.target.closest('.favorite-section__movie-container');
         if (searchResultContainer) {
-            parentContainerRef = document.querySelector('#searchResultSection');
+            parentContainerRef = document.querySelector('#searchSection');
+        }
+        else if (favoriteContainer) {
+            parentContainerRef = document.querySelector('#favoriteSection');
         }
 
 

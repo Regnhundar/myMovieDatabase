@@ -13,11 +13,11 @@ window.addEventListener(`DOMContentLoaded`, () => {
         populateTopTwenty();
     }
     if (document.location.pathname.endsWith("favorites.html")) {
-        console.log(`Entered favorites`);
+        console.log(`favorites.html`);
         populateFavorites();
     } else {
     
-    console.log(`DOMContentLoaded`); 
+    console.log(`index.html`); 
     }
 });
 
