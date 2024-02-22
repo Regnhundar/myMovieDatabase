@@ -1,3 +1,4 @@
+import localStorageModule from "./localStorageModule.js";
 import script from "./script.js";
 let trailerToView = 0;
 let playlist = [];
@@ -56,24 +57,30 @@ function renderMovie (array, container) {
         figureRef.addEventListener(`mouseleave`, () => {
             favoriteRef.classList.add(`d-none`);
         });
-        favoriteRef.src = `./assets/favorite.svg`;
-        favoriteRef.alt = `Add to favorites!`
         favoriteRef.dataset.imdbid = movie.imdbid;
+        if (localStorageModule.getFavorites().some(favorite => favorite.id === movie.imdbid)){
+            favoriteRef.src = `./assets/favorite.svg`;
+            favoriteRef.alt = `Remove from favorites!`
+        } else {
+            favoriteRef.src = `./assets/notFavorite.svg`;
+            favoriteRef.alt = `Add to favorites!`
+        }
         favoriteRef.addEventListener(`click`, script.sendToStorage);
         let captionRef = document.createElement(`figcaption`);
         captionRef.classList.add(`${container}-section__movie-title`);
         captionRef.textContent = movie.title;
+  
         figureRef.appendChild(posterRef);
+
         figureRef.appendChild(favoriteRef);
         figureRef.appendChild(captionRef);
+        console.log(`Still logging`);
         sectionRef.appendChild(figureRef);
-
-
+        console.log(`Not logging`);
     });
 }
 
 function renderMoreInfo (event, result) {
-console.log(event.target);
     event.preventDefault();
 
     const  infoContainer = document.querySelector(`.more-info-container`);
@@ -106,6 +113,16 @@ console.log(event.target);
     }
 }
 
+function favoriteIconToggle (event) {
+    let favoriteIcon = event.target;
+    if (favoriteIcon.src.endsWith(`favorite.svg`)) {
+        favoriteIcon.src = `./assets/notFavorite.svg`
+    }
+    else if (favoriteIcon.src.endsWith(`notFavorite.svg`)) {
+        favoriteIcon.src = `./assets/favorite.svg`
+    }
+}
 
 
-export default {playerSetup, renderMovie, renderMoreInfo}
+
+export default {playerSetup, renderMovie, renderMoreInfo, favoriteIconToggle}

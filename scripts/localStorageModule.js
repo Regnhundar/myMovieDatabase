@@ -2,7 +2,6 @@ function getFavorites() {
 
     try {
         const favoritesString = localStorage.getItem(`favorites`) || JSON.stringify([]);
-
         let favorites = JSON.parse(favoritesString);
         return favorites;
         
@@ -24,17 +23,14 @@ function handleStorage (imdbID) {
             let newFavorite = {
                 id : imdbID
             }
-            console.log(`Adding favorite:`, newFavorite);
 
             favorites.push(newFavorite);
 
         } else {
             favorites = favorites.filter(favorite =>  favorite.id !== imdbID);
-            console.log(`Removed favorite`);
         }
         
     localStorage.setItem(`favorites`, JSON.stringify(favorites));
-
     console.log(`Current favorites:`, favorites);
 
     } catch (error) {
