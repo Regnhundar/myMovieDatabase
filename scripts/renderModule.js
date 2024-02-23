@@ -138,6 +138,38 @@ function favoriteIconToggle (event) {
     }
 }
 
+function showContainer (container) {
+
+    const topListContainerRef = document.querySelector(`#toplistSection`);
+    const searchResultContainerRef = document.querySelector(`#searchSection`);
+    const trailerContainerRef = document.querySelector(`#trailerSection`);
+    const favoriteContainerRef = document.querySelector(`#favoriteSection`);
+
+    if (container === `notSearching`) {
+        if (trailerContainerRef) {
+            topListContainerRef.classList.remove(`d-none`);
+            trailerContainerRef.classList.remove(`d-none`);
+            searchResultContainerRef.remove();
+        }
+        else if (favoriteContainerRef) {
+            favoriteContainerRef.classList.remove(`d-none`);
+            searchResultContainerRef.remove();
+        }
+       
+    }
+    else if (container === `searching`) {
+
+        if (favoriteContainerRef) {     
+            favoriteContainerRef.classList.add(`d-none`);
+        }
+        else if (trailerContainerRef) {
+            topListContainerRef.classList.add(`d-none`);
+            trailerContainerRef.classList.add(`d-none`);
+        }
+    }
+
+}
 
 
-export default {playerSetup, renderMovie, renderMoreInfo, favoriteIconToggle}
+
+export default {playerSetup, renderMovie, renderMoreInfo, favoriteIconToggle, showContainer}

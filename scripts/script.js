@@ -7,17 +7,13 @@ window.addEventListener(`DOMContentLoaded`, () => {
     document.querySelector(`#searchbar`).addEventListener(`input`, searchForMovie);
 
     localStorageModule.getFavorites();
-    console.log(localStorageModule.getFavorites());
     if (document.querySelector(`#trailerSection`)) {
         populateTrailers();
         populateTopTwenty();
     }
-    if (document.location.pathname.endsWith("favorites.html")) {
+    else if (document.location.pathname.endsWith("favorites.html")) {
         console.log(`favorites.html`);
         populateFavorites();
-    } else {
-    
-    console.log(`index.html`); 
     }
 });
 
@@ -81,30 +77,20 @@ async function searchForMovie (event) {
         const searchBarRef = document.querySelector(`#searchbar`);
 
         if (searchBarRef.value.length > 0) {
-           
             const data = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&s=${searchWord}`);
             const standardizedData = standardizeApiKeys(data.Search);
-
-
-
-            document.querySelector(`#toplistSection`).classList.add(`d-none`);
-            document.querySelector(`#trailerSection`).classList.add(`d-none`);
-            
-
+            renderModule.showContainer(`searching`); 
             renderModule.renderMovie(standardizedData, `search`);
-        }
-        else {
-            document.querySelector(`#toplistSection`).classList.remove(`d-none`);
-            document.querySelector(`#trailerSection`).classList.remove(`d-none`);
-            document.querySelector(`#searchSection`).remove();
-        }
+        } else {
+            renderModule.showContainer(`notSearching`);
+          }
     } catch (error) {
         console.log(`Something went wrong at searchForMovie: ${error}`);
     }
 }
 
 async function populateFavorites() {
-// OBS: sätt tillbaka href på <a> så den tar dig till favorites.html
+
     try {
 
         const favorites = localStorageModule.getFavorites();
