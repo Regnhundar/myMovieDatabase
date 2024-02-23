@@ -70,7 +70,7 @@ function renderMovie (array, container) {
             favoriteRef.classList.add(`d-none`);
         });
         favoriteRef.dataset.imdbid = movie.imdbid;
-        if (localStorageModule.getFavorites().some(favorite => favorite.id === movie.imdbid)){
+        if (localStorageModule.getFavorites().some(favorite => favorite.imdbid === movie.imdbid)){
             favoriteRef.src = `./assets/favorite.svg`;
             favoriteRef.alt = `Remove from favorites!`
         } else {

@@ -57,16 +57,29 @@ async function populateTopTwenty () {
 }
 
 // Nycklarna i omdbapi är inte i gemener vilket movies.json är. För att kunna rendera med samma funktion gör jag om nycklarna till gemener.
-function standardizeApiKeys (array) {
-    let result = [];
-    array.forEach(movie => {
-        const standardizedMovie = {};
-        Object.keys(movie).forEach(key => {
-            standardizedMovie[key.toLowerCase()] = movie[key]
-        })
-        result.push(standardizedMovie);
-    })
-    return result;
+function standardizeApiKeys(input) {
+   // Kollar först om anropet skickar med en array. Som från sökresultat.
+   
+    if (Array.isArray(input)) {
+        let result = [];
+        input.forEach(item => {
+            const standardizedItem = {};
+            Object.keys(item).forEach(key => {
+                standardizedItem[key.toLowerCase()] = item[key];
+            });
+            result.push(standardizedItem);
+        });
+        return result;
+    // När man lägger till en favorit är det ju enbart ett objekt och behöver då hanteras annorlunda.
+    } else { 
+        const standardizedItem = {};
+        Object.keys(input).forEach(key => {
+            standardizedItem[key.toLowerCase()] = input[key];
+        });
+
+        return standardizedItem;
+    }
+    
 }
 
 async function searchForMovie (event) {
@@ -78,6 +91,7 @@ async function searchForMovie (event) {
 
         if (searchBarRef.value.length > 0) {
             const data = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&s=${searchWord}`);
+            console.log(data);
             const standardizedData = standardizeApiKeys(data.Search);
             renderModule.showContainer(`searching`); 
             renderModule.renderMovie(standardizedData, `search`);
@@ -89,28 +103,9 @@ async function searchForMovie (event) {
     }
 }
 
-async function populateFavorites() {
-
-    try {
-
+function populateFavorites() {
         const favorites = localStorageModule.getFavorites();
-
-        let favoriteArray = [];
-
-
-            for(let i = 0; i < favorites.length; i++) {
-                let favoriteInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&i=${favorites[i].id}`);
-                favoriteArray.push(favoriteInfo);
-            }
-
-            favoriteArray = standardizeApiKeys(favoriteArray);
-
-            renderModule.renderMovie(favoriteArray, `favorite`);
-
-        
-    } catch (error) {
-        console.log(`Something went wrong at populateFavorites: ${error}`);
-      } 
+            renderModule.renderMovie(favorites, `favorite`);
 }
 
 
@@ -124,12 +119,15 @@ async function getMoreInfo (event) {
     }
 }
 
- function sendToStorage (event) {
+ async function sendToStorage (event) {
     event.stopPropagation(); // För att förhindra att eventlystnaren på containern också triggas 
-
     try {
-        localStorageModule.handleStorage(event.currentTarget.dataset.imdbid);
+        let favoriteInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&i=${event.currentTarget.dataset.imdbid}`);
         renderModule.favoriteIconToggle(event);
+        favoriteInfo = standardizeApiKeys(favoriteInfo);
+
+        localStorageModule.handleStorage(favoriteInfo);
+
          
     } catch (error) {
         console.log(`Something went wrong at sendToStorage: ${error}`);

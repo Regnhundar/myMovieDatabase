@@ -190,7 +190,7 @@ h2 {
 
 .toplist-section__favorite-icon:hover,
 .search-section__favorite-icon:hover,
-.favorite-section__icon:hover {
+.favorite-section__favorite-icon:hover {
     scale: 1.1;
 }
 

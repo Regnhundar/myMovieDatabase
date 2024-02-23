@@ -12,22 +12,23 @@ function getFavorites() {
 
 }
 
-function handleStorage (imdbID) {
+function handleStorage (objectToCheck) {
 
     try {
 
         let favorites = getFavorites();
-        let checkForDuplicate = favorites.some(favorite => favorite.id === imdbID);
+        let checkForDuplicate = favorites.some(favorite => favorite.imdbid === objectToCheck.imdbid
+);
 
         if (!checkForDuplicate) {
-            let newFavorite = {
-                id : imdbID
-            }
+            let newFavorite = objectToCheck;
+          
 
             favorites.push(newFavorite);
 
         } else {
-            favorites = favorites.filter(favorite =>  favorite.id !== imdbID);
+            favorites = favorites.filter(favorite =>  favorite.imdbid !== objectToCheck.imdbid
+    );
         }
         
     localStorage.setItem(`favorites`, JSON.stringify(favorites));
