@@ -17,19 +17,13 @@ function handleStorage (objectToCheck) {
     try {
 
         let favorites = getFavorites();
-        let checkForDuplicate = favorites.some(favorite => favorite.imdbid === objectToCheck.imdbid
-);
-
+        let checkForDuplicate = favorites.some(favorite => favorite.imdbid === objectToCheck.imdbid);
         if (!checkForDuplicate) {
             let newFavorite = objectToCheck;
-          
-
             favorites.push(newFavorite);
-
         } else {
-            favorites = favorites.filter(favorite =>  favorite.imdbid !== objectToCheck.imdbid
-    );
-        }
+            favorites = favorites.filter(favorite =>  favorite.imdbid !== objectToCheck.imdbid);
+            }
         
     localStorage.setItem(`favorites`, JSON.stringify(favorites));
     console.log(`Current favorites:`, favorites);

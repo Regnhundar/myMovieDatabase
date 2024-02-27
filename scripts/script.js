@@ -1,6 +1,7 @@
 import apiModule from "./apiModule.js";
 import renderModule from "./renderModule.js";
 import localStorageModule from "./localStorageModule.js";
+import trailerModule from "./trailerModule.js";
 
 
 window.addEventListener(`DOMContentLoaded`, () => {
@@ -27,14 +28,14 @@ async function populateTrailers () {
         });
 
         const fiveTrailers = [];
-
+//  för att inte få dublett så loopar vi igenom och tar bort den vi lägger till i fiveTrailers från ursprungliga arrayen.
         for (let i = 0; i<5; i++) {
             const random = Math.floor(Math.random() * trailers.length);
             fiveTrailers.push(trailers[random])
             trailers.splice(random, 1);
         }
         document.querySelector(`#videoPlayer`).src = fiveTrailers[0];
-        renderModule.playerSetup(fiveTrailers);
+        trailerModule.playerSetup(fiveTrailers);
     } catch (error) {
         console.log(`Something went wrong at populateTrailers: ${error}`);
     }
@@ -59,7 +60,6 @@ async function populateTopTwenty () {
 // Nycklarna i omdbapi är inte i gemener vilket movies.json är. För att kunna rendera med samma funktion gör jag om nycklarna till gemener.
 function standardizeApiKeys(input) {
    // Kollar först om anropet skickar med en array. Som från sökresultat.
-   
     if (Array.isArray(input)) {
         let result = [];
         input.forEach(item => {
@@ -76,10 +76,8 @@ function standardizeApiKeys(input) {
         Object.keys(input).forEach(key => {
             standardizedItem[key.toLowerCase()] = input[key];
         });
-
         return standardizedItem;
-    }
-    
+    }   
 }
 
 async function searchForMovie (event) {
@@ -91,8 +89,7 @@ async function searchForMovie (event) {
 
         if (searchBarRef.value.length > 0) {
             const data = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&s=${searchWord}`);
-            console.log(data);
-            const standardizedData = standardizeApiKeys(data.Search);
+            let standardizedData = standardizeApiKeys(data.Search);
             renderModule.showContainer(`searching`); 
             renderModule.renderMovie(standardizedData, `search`);
         } else {
@@ -111,9 +108,9 @@ function populateFavorites() {
 
 async function getMoreInfo (event) {
     try {
-        const moreInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&plot=full&i=${event.currentTarget.dataset.imdbid}`);
-        
-        renderModule.renderMoreInfo(event, moreInfo)
+        let moreInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&plot=full&i=${event.currentTarget.dataset.imdbid}`);
+        moreInfo = standardizeApiKeys(moreInfo);
+        renderModule.renderMoreInfo(event, moreInfo);
     } catch (error) {
         console.log(`Something went wrong at getMoreInfo: ${error}`);
     }
@@ -122,13 +119,10 @@ async function getMoreInfo (event) {
  async function sendToStorage (event) {
     event.stopPropagation(); // För att förhindra att eventlystnaren på containern också triggas 
     try {
-        let favoriteInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&i=${event.currentTarget.dataset.imdbid}`);
         renderModule.favoriteIconToggle(event);
+        let favoriteInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&i=${event.currentTarget.dataset.imdbid}`);
         favoriteInfo = standardizeApiKeys(favoriteInfo);
-
-        localStorageModule.handleStorage(favoriteInfo);
-
-         
+        localStorageModule.handleStorage(favoriteInfo);  
     } catch (error) {
         console.log(`Something went wrong at sendToStorage: ${error}`);
     }

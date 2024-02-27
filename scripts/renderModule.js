@@ -1,39 +1,6 @@
 import localStorageModule from "./localStorageModule.js";
 import script from "./script.js";
-let trailerToView = 0;
-let playlist = [];
 
-function playerSetup (trailers) {
-     trailers.forEach(trailer => { playlist.push(trailer) 
-    });
-    document.querySelector(`#leftArrow`).addEventListener(`click`, previousTrailer);
-    document.querySelector(`#rigthArrow`).addEventListener(`click`, nextTrailer);
-}
-
-function renderTrailer () {
-    const videoPlayer = document.querySelector(`#videoPlayer`);
-    videoPlayer.src = playlist[trailerToView];
-}
-
-function previousTrailer () {
-    if (trailerToView === 0) {
-        trailerToView = 4;
-    }
-    else {
-        trailerToView--;
-    }
-    renderTrailer();
-}
-
-function nextTrailer () {
-    if (trailerToView === 4) {
-        trailerToView = 0;
-    }
-    else {
-        trailerToView++;
-    }
-    renderTrailer();
-}
 
 function renderMovie (array, container) {
     console.log(array);
@@ -93,7 +60,7 @@ function renderMovie (array, container) {
 
 function renderMoreInfo (event, result) {
     event.preventDefault();
-
+console.log(result);
     const  infoContainer = document.querySelector(`.more-info-container`);
 
     if (infoContainer) {
@@ -103,9 +70,9 @@ function renderMoreInfo (event, result) {
     else {    
         const moreInfoContainerRef = document.createElement(`article`);
         let parentContainerRef = document.querySelector(`#toplistSection`);
+        const searchResultContainer = event.target.closest('.search-section');
+        const favoriteContainer = event.target.closest('.favorite-section');
 
-        const searchResultContainer = event.target.closest('.search-section__movie-container');
-        const favoriteContainer = event.target.closest('.favorite-section__movie-container');
         if (searchResultContainer) {
             parentContainerRef = document.querySelector('#searchSection');
         }
@@ -115,15 +82,60 @@ function renderMoreInfo (event, result) {
 
 
         moreInfoContainerRef.classList.add(`more-info-container`);
-        const titleRef = document.createElement(`h2`);
-        titleRef.classList.add(`more-info-container__title`)
-        titleRef.textContent = result.Title
-        moreInfoContainerRef.appendChild(titleRef);
+
+        const infoWrapperRef = document.createElement(`div`);
+        infoWrapperRef.classList.add(`more-info-container__info-wrapper`);
+        const titleRef = document.createElement(`h3`);
+        titleRef.classList.add(`more-info-container__title`);
+        titleRef.textContent = result.title;
+        infoWrapperRef.appendChild(titleRef);
+
+        const directorRef = document.createElement(`p`);
+        directorRef.classList.add(`more-info-container__director`);
+        directorRef.textContent = `Director: ${result.director}`;
+        infoWrapperRef.appendChild(directorRef);
+
+        const actorsRef = document.createElement(`p`);
+        actorsRef.classList.add(`more-info-container__actor`);
+        actorsRef.textContent = `Actors: ${result.actors}`;
+        infoWrapperRef.appendChild(actorsRef);
+
+        const runtimeRef = document.createElement(`p`);
+        runtimeRef.classList.add(`more-info-container__runtime`);
+        runtimeRef.textContent = `Runtime: ${result.runtime}`;
+        infoWrapperRef.appendChild(runtimeRef);
+        
+        const ratingRef = document.createElement(`p`);
+        ratingRef.classList.add(`more-info-container__rating`);
+        ratingRef.textContent = `IMDb Rating: ${result.imdbrating}`;
+        infoWrapperRef.appendChild(ratingRef);
+        moreInfoContainerRef.appendChild(infoWrapperRef);
+
+        const plotAndPosterContainerRef = document.createElement(`div`);
+        plotAndPosterContainerRef.classList.add(`more-info-container__plot-and-poster-wrapper`);
+
+        const posterRef = document.createElement(`img`);
+        posterRef.classList.add(`more-info-container__poster`);
+        posterRef.src = result.poster;
+        posterRef.alt = `Cover of the movie ${result.title}`;
+        plotAndPosterContainerRef.appendChild(posterRef);
+
         const plotRef = document.createElement(`p`);
         plotRef.classList.add(`more-info-container__plot-text`);
-        plotRef.textContent = result.Plot;
-        moreInfoContainerRef.appendChild(plotRef);
-        console.log(result);
+        plotRef.textContent = result.plot;
+
+        plotAndPosterContainerRef.appendChild(plotRef);
+
+        moreInfoContainerRef.appendChild(plotAndPosterContainerRef);
+
+        const containerRect = parentContainerRef.getBoundingClientRect();
+        const offsetX = containerRect.width / 2; 
+        const offsetY = event.clientY - containerRect.top;
+
+
+        moreInfoContainerRef.style.left = `calc(50% - ${offsetX}px)`;
+        moreInfoContainerRef.style.top = `${offsetY}px`;
+
         parentContainerRef.appendChild(moreInfoContainerRef);
     }
 }
@@ -172,4 +184,4 @@ function showContainer (container) {
 
 
 
-export default {playerSetup, renderMovie, renderMoreInfo, favoriteIconToggle, showContainer}
+export default {renderMovie, renderMoreInfo, favoriteIconToggle, showContainer}
