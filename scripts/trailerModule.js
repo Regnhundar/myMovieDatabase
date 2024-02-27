@@ -2,7 +2,8 @@ let trailerToView = 0;
 let playlist = [];
 
 function playerSetup (trailers) {
-     trailers.forEach(trailer => { playlist.push(trailer) 
+     trailers.forEach(trailer => { 
+        playlist.push(trailer) 
     });
     document.querySelector(`#previousTrailer`).addEventListener(`click`, previousTrailer);
     document.querySelector(`#nextTrailer`).addEventListener(`click`, nextTrailer);

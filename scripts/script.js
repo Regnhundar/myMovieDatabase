@@ -122,7 +122,8 @@ async function getMoreInfo (event) {
         renderModule.favoriteIconToggle(event);
         let favoriteInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&i=${event.currentTarget.dataset.imdbid}`);
         favoriteInfo = standardizeApiKeys(favoriteInfo);
-        localStorageModule.handleStorage(favoriteInfo);  
+        localStorageModule.handleStorage(favoriteInfo);
+        
     } catch (error) {
         console.log(`Something went wrong at sendToStorage: ${error}`);
     }

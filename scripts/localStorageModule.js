@@ -1,3 +1,4 @@
+import renderModule from "./renderModule.js";
 function getFavorites() {
 
     try {
@@ -25,8 +26,11 @@ function handleStorage (objectToCheck) {
             favorites = favorites.filter(favorite =>  favorite.imdbid !== objectToCheck.imdbid);
             }
         
-    localStorage.setItem(`favorites`, JSON.stringify(favorites));
-    console.log(`Current favorites:`, favorites);
+        localStorage.setItem(`favorites`, JSON.stringify(favorites));
+        if (document.location.pathname.endsWith("favorites.html")) {
+            renderModule.renderMovie(favorites, `favorite`)
+        }
+        console.log(`Current favorites:`, favorites);
 
     } catch (error) {
         console.log(`Something went wrong at handleStorage: ${error}`);
