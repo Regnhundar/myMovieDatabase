@@ -1,8 +1,8 @@
+import renderModule from "./renderModule.js";
 function getFavorites() {
 
     try {
         const favoritesString = localStorage.getItem(`favorites`) || JSON.stringify([]);
-
         let favorites = JSON.parse(favoritesString);
         return favorites;
         
@@ -13,29 +13,24 @@ function getFavorites() {
 
 }
 
-function handleStorage (imdbID) {
+function handleStorage (objectToCheck) {
 
     try {
 
         let favorites = getFavorites();
-        let checkForDuplicate = favorites.some(favorite => favorite.id === imdbID);
-
+        let checkForDuplicate = favorites.some(favorite => favorite.imdbid === objectToCheck.imdbid);
         if (!checkForDuplicate) {
-            let newFavorite = {
-                id : imdbID
-            }
-            console.log(`Adding favorite:`, newFavorite);
-
+            let newFavorite = objectToCheck;
             favorites.push(newFavorite);
-
         } else {
-            favorites = favorites.filter(favorite =>  favorite.id !== imdbID);
-            console.log(`Removed favorite`);
-        }
+            favorites = favorites.filter(favorite =>  favorite.imdbid !== objectToCheck.imdbid);
+            }
         
-    localStorage.setItem(`favorites`, JSON.stringify(favorites));
-
-    console.log(`Current favorites:`, favorites);
+        localStorage.setItem(`favorites`, JSON.stringify(favorites));
+        if (document.location.pathname.endsWith("favorites.html")) {
+            renderModule.renderMovie(favorites, `favorite`)
+        }
+        console.log(`Current favorites:`, favorites);
 
     } catch (error) {
         console.log(`Something went wrong at handleStorage: ${error}`);

@@ -1,42 +1,22 @@
+import localStorageModule from "./localStorageModule.js";
 import script from "./script.js";
-let trailerToView = 0;
-let playlist = [];
 
-function playerSetup (trailers) {
-     trailers.forEach(trailer => { playlist.push(trailer) 
-    });
-    document.querySelector(`#leftArrow`).addEventListener(`click`, previousTrailer);
-    document.querySelector(`#rigthArrow`).addEventListener(`click`, nextTrailer);
-}
-
-function renderTrailer () {
-    const videoPlayer = document.querySelector(`#videoPlayer`);
-    videoPlayer.src = playlist[trailerToView];
-}
-
-function previousTrailer () {
-    if (trailerToView === 0) {
-        trailerToView = 4;
-    }
-    else {
-        trailerToView--;
-    }
-    renderTrailer();
-}
-
-function nextTrailer () {
-    if (trailerToView === 4) {
-        trailerToView = 0;
-    }
-    else {
-        trailerToView++;
-    }
-    renderTrailer();
-}
 
 function renderMovie (array, container) {
     console.log(array);
-    let sectionRef = document.querySelector(`.${container}-section`);
+
+    const mainRef = document.querySelector(`#main`);
+
+    const  sectionContainerRef = document.querySelector(`.${container}-section`);
+
+    if (sectionContainerRef) {
+        sectionContainerRef.remove();
+    }
+    
+    let sectionRef = document.createElement(`section`);
+    sectionRef.classList.add(`${container}-section`);
+    sectionRef.id = `${container}Section`;
+    sectionRef.innerHTML = ``;
     array.forEach(movie => {
 
         let figureRef = document.createElement(`figure`);
@@ -56,26 +36,31 @@ function renderMovie (array, container) {
         figureRef.addEventListener(`mouseleave`, () => {
             favoriteRef.classList.add(`d-none`);
         });
-        favoriteRef.src = `./assets/favorite.svg`;
-        favoriteRef.alt = `Add to favorites!`
         favoriteRef.dataset.imdbid = movie.imdbid;
+        if (localStorageModule.getFavorites().some(favorite => favorite.imdbid === movie.imdbid)){
+            favoriteRef.src = `./assets/favorite.svg`;
+            favoriteRef.alt = `Remove from favorites!`
+        } else {
+            favoriteRef.src = `./assets/notFavorite.svg`;
+            favoriteRef.alt = `Add to favorites!`
+        }
         favoriteRef.addEventListener(`click`, script.sendToStorage);
         let captionRef = document.createElement(`figcaption`);
         captionRef.classList.add(`${container}-section__movie-title`);
         captionRef.textContent = movie.title;
+
         figureRef.appendChild(posterRef);
         figureRef.appendChild(favoriteRef);
         figureRef.appendChild(captionRef);
         sectionRef.appendChild(figureRef);
-
+        mainRef.appendChild(sectionRef);
 
     });
 }
 
 function renderMoreInfo (event, result) {
-console.log(event.target);
     event.preventDefault();
-
+console.log(result);
     const  infoContainer = document.querySelector(`.more-info-container`);
 
     if (infoContainer) {
@@ -84,28 +69,119 @@ console.log(event.target);
 
     else {    
         const moreInfoContainerRef = document.createElement(`article`);
-        let parentContainerRef = document.querySelector(`#topTwentySection`);
+        let parentContainerRef = document.querySelector(`#toplistSection`);
+        const searchResultContainer = event.target.closest('.search-section');
+        const favoriteContainer = event.target.closest('.favorite-section');
 
-        const searchResultContainer = event.target.closest('.search-result-section__movie-container');
         if (searchResultContainer) {
-            parentContainerRef = document.querySelector('#searchResultSection');
+            parentContainerRef = document.querySelector('#searchSection');
+        }
+        else if (favoriteContainer) {
+            parentContainerRef = document.querySelector('#favoriteSection');
         }
 
 
         moreInfoContainerRef.classList.add(`more-info-container`);
-        const titleRef = document.createElement(`h2`);
-        titleRef.classList.add(`more-info-container__title`)
-        titleRef.textContent = result.Title
-        moreInfoContainerRef.appendChild(titleRef);
+
+        const infoWrapperRef = document.createElement(`div`);
+        infoWrapperRef.classList.add(`more-info-container__info-wrapper`);
+        const titleRef = document.createElement(`h3`);
+        titleRef.classList.add(`more-info-container__title`);
+        titleRef.textContent = result.title;
+        infoWrapperRef.appendChild(titleRef);
+
+        const directorRef = document.createElement(`p`);
+        directorRef.classList.add(`more-info-container__director`);
+        directorRef.textContent = `Director: ${result.director}`;
+        infoWrapperRef.appendChild(directorRef);
+
+        const actorsRef = document.createElement(`p`);
+        actorsRef.classList.add(`more-info-container__actor`);
+        actorsRef.textContent = `Actors: ${result.actors}`;
+        infoWrapperRef.appendChild(actorsRef);
+
+        const runtimeRef = document.createElement(`p`);
+        runtimeRef.classList.add(`more-info-container__runtime`);
+        runtimeRef.textContent = `Runtime: ${result.runtime}`;
+        infoWrapperRef.appendChild(runtimeRef);
+        
+        const ratingRef = document.createElement(`p`);
+        ratingRef.classList.add(`more-info-container__rating`);
+        ratingRef.textContent = `IMDb Rating: ${result.imdbrating}`;
+        infoWrapperRef.appendChild(ratingRef);
+        moreInfoContainerRef.appendChild(infoWrapperRef);
+
+        const plotAndPosterContainerRef = document.createElement(`div`);
+        plotAndPosterContainerRef.classList.add(`more-info-container__plot-and-poster-wrapper`);
+
+        const posterRef = document.createElement(`img`);
+        posterRef.classList.add(`more-info-container__poster`);
+        posterRef.src = result.poster;
+        posterRef.alt = `Cover of the movie ${result.title}`;
+        plotAndPosterContainerRef.appendChild(posterRef);
+
         const plotRef = document.createElement(`p`);
         plotRef.classList.add(`more-info-container__plot-text`);
-        plotRef.textContent = result.Plot;
-        moreInfoContainerRef.appendChild(plotRef);
-        console.log(result);
+        plotRef.textContent = result.plot;
+
+        plotAndPosterContainerRef.appendChild(plotRef);
+
+        moreInfoContainerRef.appendChild(plotAndPosterContainerRef);
+
+        const containerRect = parentContainerRef.getBoundingClientRect();
+        const offsetX = containerRect.width / 2; 
+        const offsetY = event.clientY - containerRect.top;
+
+
+        moreInfoContainerRef.style.left = `calc(50% - ${offsetX}px)`;
+        moreInfoContainerRef.style.top = `${offsetY}px`;
+
         parentContainerRef.appendChild(moreInfoContainerRef);
     }
 }
 
+function favoriteIconToggle (event) {
+    let favoriteIcon = event.target;
+    if (favoriteIcon.src.endsWith(`favorite.svg`)) {
+        favoriteIcon.src = `./assets/notFavorite.svg`
+    }
+    else if (favoriteIcon.src.endsWith(`notFavorite.svg`)) {
+        favoriteIcon.src = `./assets/favorite.svg`
+    }
+}
+
+function showContainer (container) {
+
+    const topListContainerRef = document.querySelector(`#toplistSection`);
+    const searchResultContainerRef = document.querySelector(`#searchSection`);
+    const trailerContainerRef = document.querySelector(`#trailerSection`);
+    const favoriteContainerRef = document.querySelector(`#favoriteSection`);
+
+    if (container === `notSearching`) {
+        if (trailerContainerRef) {
+            topListContainerRef.classList.remove(`d-none`);
+            trailerContainerRef.classList.remove(`d-none`);
+            searchResultContainerRef.remove();
+        }
+        else if (favoriteContainerRef) {
+            favoriteContainerRef.classList.remove(`d-none`);
+            searchResultContainerRef.remove();
+        }
+       
+    }
+    else if (container === `searching`) {
+
+        if (favoriteContainerRef) {     
+            favoriteContainerRef.classList.add(`d-none`);
+        }
+        else if (trailerContainerRef) {
+            topListContainerRef.classList.add(`d-none`);
+            trailerContainerRef.classList.add(`d-none`);
+        }
+    }
+
+}
 
 
-export default {playerSetup, renderMovie, renderMoreInfo}
+
+export default {renderMovie, renderMoreInfo, favoriteIconToggle, showContainer}
