@@ -118,6 +118,7 @@ console.log(result);
         posterRef.classList.add(`more-info-container__poster`);
         posterRef.src = result.poster;
         posterRef.alt = `Cover of the movie ${result.title}`;
+        
         plotAndPosterContainerRef.appendChild(posterRef);
 
         const plotRef = document.createElement(`p`);
