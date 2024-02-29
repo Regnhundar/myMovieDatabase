@@ -1,12 +1,21 @@
 import apiModule from "./apiModule.js";
 import renderModule from "./renderModule.js";
+import localStorageModule from "./localStorageModule.js";
+import trailerModule from "./trailerModule.js";
 
 
 window.addEventListener(`DOMContentLoaded`, () => {
     document.querySelector(`#searchbar`).addEventListener(`input`, searchForMovie);
-    populateTrailers();
-    populateTopTwenty();
-    console.log(`DOMContentLoaded`); 
+
+    localStorageModule.getFavorites();
+    if (document.querySelector(`#trailerSection`)) {
+        populateTrailers();
+        populateTopTwenty();
+    }
+    else if (document.location.pathname.endsWith("favorites.html")) {
+        console.log(`favorites.html`);
+        populateFavorites();
+    }
 });
 
 
@@ -19,14 +28,14 @@ async function populateTrailers () {
         });
 
         const fiveTrailers = [];
-
+//  för att inte få dublett så loopar vi igenom och tar bort den vi lägger till i fiveTrailers från ursprungliga arrayen.
         for (let i = 0; i<5; i++) {
             const random = Math.floor(Math.random() * trailers.length);
             fiveTrailers.push(trailers[random])
             trailers.splice(random, 1);
         }
         document.querySelector(`#videoPlayer`).src = fiveTrailers[0];
-        renderModule.playerSetup(fiveTrailers);
+        trailerModule.playerSetup(fiveTrailers);
     } catch (error) {
         console.log(`Something went wrong at populateTrailers: ${error}`);
     }
@@ -41,11 +50,34 @@ async function populateTopTwenty () {
             topTwenty.push(movie)
         });
 
-        renderModule.renderMovie(topTwenty, `top-twenty`);
+        renderModule.renderMovie(topTwenty, `toplist`);
     } catch (error) {
         console.log(`Something went wrong at populateTopTwenty: ${error}`);
     }
 
+}
+
+// Nycklarna i omdbapi är inte i gemener vilket movies.json är. För att kunna rendera med samma funktion gör jag om nycklarna till gemener.
+function standardizeApiKeys(input) {
+   // Kollar först om anropet skickar med en array. Som från sökresultat.
+    if (Array.isArray(input)) {
+        let result = [];
+        input.forEach(item => {
+            const standardizedItem = {};
+            Object.keys(item).forEach(key => {
+                standardizedItem[key.toLowerCase()] = item[key];
+            });
+            result.push(standardizedItem);
+        });
+        return result;
+    // När man lägger till en favorit är det ju enbart ett objekt och behöver då hanteras annorlunda.
+    } else { 
+        const standardizedItem = {};
+        Object.keys(input).forEach(key => {
+            standardizedItem[key.toLowerCase()] = input[key];
+        });
+        return standardizedItem;
+    }   
 }
 
 async function searchForMovie (event) {
@@ -53,42 +85,50 @@ async function searchForMovie (event) {
     try {
 
         let searchWord = event.target.value.toLowerCase();
-        const searchResults = [];
         const searchBarRef = document.querySelector(`#searchbar`);
-        const searchResultContainerRef = document.querySelector(`#searchResultSection`);
-        const data = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&s=${searchWord}`);
-
 
         if (searchBarRef.value.length > 0) {
-            // Nycklarna i omdbapi är inte i gemener vilket movies.json är. För att kunna rendera med samma funktion gör jag om nycklarna till gemener.
-            data.Search.forEach(movie => {
-                const standardizedMovie = {};
-                Object.keys(movie).forEach(key => {
-                    standardizedMovie[key.toLowerCase()] = movie[key]
-                })
-                searchResults.push(standardizedMovie);
-            })
-
-            searchResultContainerRef.innerHTML = ``;
-            document.querySelector(`#topTwentySection`).classList.add(`d-none`);
-            document.querySelector(`#trailerSection`).classList.add(`d-none`);
-            searchResultContainerRef.classList.remove(`d-none`);
-
-            renderModule.renderMovie(searchResults, `search-result`);
-        }
-        else {
-            document.querySelector(`#topTwentySection`).classList.remove(`d-none`);
-            document.querySelector(`#trailerSection`).classList.remove(`d-none`);
-            searchResultContainerRef.classList.add(`d-none`);
-        }
+            const data = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&s=${searchWord}`);
+            let standardizedData = standardizeApiKeys(data.Search);
+            renderModule.showContainer(`searching`); 
+            renderModule.renderMovie(standardizedData, `search`);
+        } else {
+            renderModule.showContainer(`notSearching`);
+          }
     } catch (error) {
         console.log(`Something went wrong at searchForMovie: ${error}`);
     }
 }
 
-async function moreInfo (event) {
-    const moreInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&plot=full&i=${event.currentTarget.dataset.imdbid}`);
-    console.log(moreInfo);
+function populateFavorites() {
+        const favorites = localStorageModule.getFavorites();
+            renderModule.renderMovie(favorites, `favorite`);
 }
 
-export default {moreInfo}
+
+async function getMoreInfo (event) {
+    try {
+        let moreInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&plot=full&i=${event.currentTarget.dataset.imdbid}`);
+        moreInfo = standardizeApiKeys(moreInfo);
+        renderModule.renderMoreInfo(event, moreInfo);
+    } catch (error) {
+        console.log(`Something went wrong at getMoreInfo: ${error}`);
+    }
+}
+
+ async function sendToStorage (event) {
+    event.stopPropagation(); // För att förhindra att eventlystnaren på containern också triggas 
+    try {
+        renderModule.favoriteIconToggle(event);
+        let favoriteInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&i=${event.currentTarget.dataset.imdbid}`);
+        favoriteInfo = standardizeApiKeys(favoriteInfo);
+        localStorageModule.handleStorage(favoriteInfo);
+        
+    } catch (error) {
+        console.log(`Something went wrong at sendToStorage: ${error}`);
+    }
+}
+
+
+
+export default {getMoreInfo, sendToStorage}
