@@ -6,7 +6,7 @@ let pages = [];
 
 function splitArrayIntoPages(array, container) {
     // pages = []
-    const itemsPerPage = 12;
+    const itemsPerPage = 8;
     for (let i = 0; i < array.length; i += itemsPerPage) {
         pages.push(array.slice(i, i + itemsPerPage));
     }
