@@ -1,4 +1,5 @@
-import renderModule from "./renderModule.js";
+import paginationModule from "./paginationModule.js"
+
 function getFavorites() {
 
     try {
@@ -16,21 +17,20 @@ function getFavorites() {
 function handleStorage (objectToCheck) {
 
     try {
-
         let favorites = getFavorites();
         let checkForDuplicate = favorites.some(favorite => favorite.imdbid === objectToCheck.imdbid);
         if (!checkForDuplicate) {
-            let newFavorite = objectToCheck;
-            favorites.push(newFavorite);
+            favorites.unshift(objectToCheck);
         } else {
             favorites = favorites.filter(favorite =>  favorite.imdbid !== objectToCheck.imdbid);
             }
         
         localStorage.setItem(`favorites`, JSON.stringify(favorites));
+        // OM man står i favorites och man togglar en favorit-ikon så renderas favorites-section om.
         if (document.location.pathname.endsWith("favorites.html")) {
-            renderModule.renderMovie(favorites, `favorite`)
+            paginationModule.resetPages();
+            paginationModule.splitArrayIntoPages(favorites, `favorite`);
         }
-        console.log(`Current favorites:`, favorites);
 
     } catch (error) {
         console.log(`Something went wrong at handleStorage: ${error}`);
