@@ -8,15 +8,33 @@ function renderMovie (array, container) {
     const mainRef = document.querySelector(`#main`);
 
     const  sectionContainerRef = document.querySelector(`.${container}-section`);
-
+// För att inte skapa nya favorite-sectioner när man lägger till eller tar bort en favorite och står i favorites. 
     if (sectionContainerRef) {
-        sectionContainerRef.remove();
+        sectionContainerRef.remove(); 
     }
     
     let sectionRef = document.createElement(`section`);
     sectionRef.classList.add(`${container}-section`);
     sectionRef.id = `${container}Section`;
     sectionRef.innerHTML = ``;
+    
+    let sectionHeaderRef = document.createElement(`h2`);
+    sectionHeaderRef.classList.add(`${container}-section__title`);
+
+    if (container === `toplist`) {
+        sectionHeaderRef.innerHTML = `<span class="${container}-section__title-background ${container}-section__title-background--top">TOP</span>
+                                      <span class="${container}-section__title-background ${container}-section__title-background--bottom">TWENTY</span>`;
+    }
+    else if (container === `favorite`) {
+        sectionHeaderRef.innerHTML = `<span class="${container}-section__title-background ${container}-section__title-background--top">MY</span> 
+                                      <span class="${container}-section__title-background ${container}-section__title-background--bottom">FAVORITES</span>`;
+    }
+    else if (container === `search`) {
+        sectionHeaderRef.innerHTML = `<span class="${container}-section__title-background ${container}-section__title-background--top">YOUR</span> 
+                                      <span class="${container}-section__title-background ${container}-section__title-background--bottom">RESULTS:</span>`;
+    }
+    sectionRef.appendChild(sectionHeaderRef);
+
     array.forEach(movie => {
 
         let figureRef = document.createElement(`figure`);
@@ -52,6 +70,7 @@ function renderMovie (array, container) {
         figureRef.appendChild(posterRef);
         figureRef.appendChild(favoriteRef);
         figureRef.appendChild(captionRef);
+        
         sectionRef.appendChild(figureRef);
         mainRef.appendChild(sectionRef);
 

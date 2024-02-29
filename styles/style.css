@@ -96,7 +96,7 @@ h2 {
     position: sticky;
     background-color: var(--dark);
     top: 0;
-    z-index: 2;
+    z-index: 999;
     overflow: visible;
 }
 
@@ -122,78 +122,96 @@ h2 {
 }
 .trailer-section {
     position: relative;
-    z-index: 1;
+    z-index: 5;
     display: grid;
     gap: 1rem;
     padding: 8rem 2rem;
     margin-bottom: 2rem;
-    background-color: var(--cream);
     grid-template-columns: repeat(3, 1fr);
-    overflow: visible;
 }
 
-.trailer-section::before {
+/* .trailer-section::before,
+.toplist-section::before,
+.favorite-section::before,
+.search-section::before {
     content: "";
     width: 100%;
     height: 20%;
     position: absolute;
     top:0;
     background-color: var(--dark);
-    clip-path: polygon(0 0, 0 30%, 110% 0);
-}
+    clip-path: polygon(0 0, 0 30%, 110% 0); 
+} */
 
-.trailer-section::after {
+.trailer-section::after,
+.toplist-section::after,
+.favorite-section::after,
+.search-section::after {
+    transform: skewY(-2deg);
     content: "";
     width: 100%;
-    height: 20%;
+    height: 95%;
     position: absolute;
-    bottom: 0;
-    background-color: var(--dark);
-    clip-path: polygon(0 100%, 100% 60%, 110% 100%);
+    top: 5%;
+    left:0;
+    background-color: var(--cream);
+    /* clip-path: polygon(0 100%, 100% 60%, 110% 100%); */
 }
 
-.trailer-section__title {
+.trailer-section__title,
+.toplist-section__title,
+.favorite-section__title,
+.search-section__title {
     transform: skew(-10deg);
     grid-area: auto / auto / span 1 / span 3;
     display: grid;
     position: absolute;
     top: 0%;
     overflow: visible;
-    z-index: 5;
+    z-index: 10;
 }
 
-.trailer-section__title-background {
+.trailer-section__title-background,
+.toplist-section__title-background,
+.favorite-section__title-background,
+.search-section__title-background {
     overflow: visible;
 }
 
-.trailer-section__title-background--cream {
+.trailer-section__title-background--top,
+.toplist-section__title-background--top,
+.favorite-section__title-background--top,
+.search-section__title-background--top {
     background-color: var(--cream);
     font-size: 2rem;
-    z-index: 5;
     justify-self: start;
-    overflow: visible;
     margin-bottom: .3rem;
     padding: .5rem .5rem 0 .5rem;
 }
 
-.trailer-section__title-background--orange {
+.trailer-section__title-background--bottom,
+.toplist-section__title-background--bottom,
+.favorite-section__title-background--bottom,
+.search-section__title-background--bottom {
     font-size: 3rem;
     background-color: var(--red);
     color: var(--cream);
     justify-self: start;
-    overflow: visible;
     padding: .5rem .5rem 0 .5rem;
 }
 
 .trailer-section__video-player {
+    z-index: 5;
     grid-area: auto / auto / span 3 / span 3;
     width: 100%;
     aspect-ratio: 16/9;
 }
 
 .trailer-section__navigation-button {
+    z-index: 5;
     width: 50%;
     height: 100%;
+
 }
 .trailer-section__navigation-button--left {
     grid-area: 5 / 1 / auto / auto;
@@ -213,11 +231,11 @@ h2 {
     grid-template-columns: repeat(4, 1fr);
     padding: 8rem 2rem;
     margin: 5rem 0;
-    clip-path: polygon(0 2%, 100% 0, 100% 98%, 0 100%);
-    background-color: var(--cream);
 }
 
-.toplist-section__title {
+.toplist-section__title,
+.favorite-section__title,
+.search-section__title {
     grid-area: auto / auto / auto / span 4;
 }
 
@@ -225,6 +243,7 @@ h2 {
 .search-section__movie-container,
 .favorite-section__movie-container {
     position: relative;
+    z-index: 5;
     display: grid;
     grid-template-rows: repeat(4, 1fr);
     grid-template-columns: repeat(2, 1fr);
@@ -279,6 +298,7 @@ h2 {
 }
 
 .more-info-container {
+    z-index: 999;
     position: absolute;
     display: grid;
     grid-template-columns: .7fr 1.3fr;
@@ -344,7 +364,8 @@ h2 {
 @media screen and (max-width: 1200px){
 
     .toplist-section__title,
-    .favorite-section__title {
+    .favorite-section__title,
+    .search-section__title {
         grid-area: auto / auto / auto / span 3;
     }
 
@@ -367,7 +388,8 @@ h2 {
     }
 
     .toplist-section__title,
-    .favorite-section__title {
+    .favorite-section__title,
+    .search-section__title {
         grid-area: auto / auto / auto / span 2;
     }
     .toplist-section,
@@ -410,9 +432,10 @@ h2 {
 
 }
 
-    .toplist-section__title,
-    .favorite-section__title {
-        grid-area: auto / auto / auto / span 1;
+.toplist-section__title,
+.favorite-section__title,
+.search-section__title {
+        grid-area: auto / auto / auto / span 2;
     }
 
     .toplist-section,
