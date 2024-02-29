@@ -1,14 +1,15 @@
 import localStorageModule from "./localStorageModule.js";
 import script from "./script.js";
+import pagination from './paginationModule.js';
+import paginationModule from "./paginationModule.js";
 
 
 function renderMovie (array, container) {
-    console.log(array);
 
     const mainRef = document.querySelector(`#main`);
-
     const  sectionContainerRef = document.querySelector(`.${container}-section`);
-// För att inte skapa nya favorite-sectioner när man lägger till eller tar bort en favorite och står i favorites. 
+// Jag vill att favorites-sectionen ska uppdatera sitt innehåll direkt om man togglar ikonen. Det görs via att den här funktionen körs igen. 
+// Så för att undvika att fler sektioner skapas tar vi bort den gamla innan den nya skapas.
     if (sectionContainerRef) {
         sectionContainerRef.remove(); 
     }
@@ -20,6 +21,7 @@ function renderMovie (array, container) {
     
     let sectionHeaderRef = document.createElement(`h2`);
     sectionHeaderRef.classList.add(`${container}-section__title`);
+    sectionHeaderRef.id = `${container}Title`;
 
     if (container === `toplist`) {
         sectionHeaderRef.innerHTML = `<span class="${container}-section__title-background ${container}-section__title-background--top">TOP</span>
@@ -72,14 +74,36 @@ function renderMovie (array, container) {
         figureRef.appendChild(captionRef);
         
         sectionRef.appendChild(figureRef);
-        mainRef.appendChild(sectionRef);
-
     });
+
+    if (paginationModule.numberOfPages() > 1) {
+    const buttonWrapperRef = document.createElement(`div`);
+    buttonWrapperRef.classList.add(`${container}-section__button-wrapper`);
+
+    const backButtonRef = document.createElement(`a`);
+    backButtonRef.href = `#${container}Title`
+    backButtonRef.classList.add(`${container}-section__navigation-button`);
+    backButtonRef.textContent = `\u25C0 BACK`;
+    backButtonRef.addEventListener(`click`, () => {
+        pagination.previousPage(`${container}`)});
+    const nextButtonRef = document.createElement(`a`);
+    nextButtonRef.href = `#${container}Title`
+    nextButtonRef.classList.add(`${container}-section__navigation-button`);
+    nextButtonRef.textContent= `NEXT \u25B6`;
+    nextButtonRef.addEventListener(`click`, () => {
+        pagination.nextPage(`${container}`)});
+
+    buttonWrapperRef.appendChild(backButtonRef);
+    buttonWrapperRef.appendChild(nextButtonRef);
+    sectionRef.appendChild(buttonWrapperRef);
+    }
+    mainRef.appendChild(sectionRef);
 }
 
 function renderMoreInfo (event, result) {
+
     event.preventDefault();
-console.log(result);
+
     const  infoContainer = document.querySelector(`.more-info-container`);
 
     if (infoContainer) {

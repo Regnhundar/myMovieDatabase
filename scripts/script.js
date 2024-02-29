@@ -2,6 +2,7 @@ import apiModule from "./apiModule.js";
 import renderModule from "./renderModule.js";
 import localStorageModule from "./localStorageModule.js";
 import trailerModule from "./trailerModule.js";
+import paginationModule from './paginationModule.js';
 
 
 window.addEventListener(`DOMContentLoaded`, () => {
@@ -13,7 +14,6 @@ window.addEventListener(`DOMContentLoaded`, () => {
         populateTopTwenty();
     }
     else if (document.location.pathname.endsWith("favorites.html")) {
-        console.log(`favorites.html`);
         populateFavorites();
     }
 });
@@ -49,8 +49,8 @@ async function populateTopTwenty () {
         data.forEach(movie => { 
             topTwenty.push(movie)
         });
+        paginationModule.splitArrayIntoPages(topTwenty, `toplist`);
 
-        renderModule.renderMovie(topTwenty, `toplist`);
     } catch (error) {
         console.log(`Something went wrong at populateTopTwenty: ${error}`);
     }
@@ -102,7 +102,8 @@ async function searchForMovie (event) {
 
 function populateFavorites() {
         const favorites = localStorageModule.getFavorites();
-            renderModule.renderMovie(favorites, `favorite`);
+        paginationModule.splitArrayIntoPages(favorites, `favorite`);
+            
 }
 
 
