@@ -1,11 +1,13 @@
-import renderModule from "./renderModule.js";
+import paginationModule from "./paginationModule.js"
+
+
 function getFavorites() {
 
     try {
         const favoritesString = localStorage.getItem(`favorites`) || JSON.stringify([]);
         let favorites = JSON.parse(favoritesString);
         return favorites;
-        
+
     } catch (error) {
         console.log(`Something went wrong at getFavorites: ${error}`);
         return [];
@@ -13,24 +15,24 @@ function getFavorites() {
 
 }
 
-function handleStorage (objectToCheck) {
+
+function handleStorage(objectToCheck) {
 
     try {
-
         let favorites = getFavorites();
         let checkForDuplicate = favorites.some(favorite => favorite.imdbid === objectToCheck.imdbid);
         if (!checkForDuplicate) {
-            let newFavorite = objectToCheck;
-            favorites.push(newFavorite);
+            favorites.unshift(objectToCheck);
         } else {
-            favorites = favorites.filter(favorite =>  favorite.imdbid !== objectToCheck.imdbid);
-            }
-        
-        localStorage.setItem(`favorites`, JSON.stringify(favorites));
-        if (document.location.pathname.endsWith("favorites.html")) {
-            renderModule.renderMovie(favorites, `favorite`)
+            favorites = favorites.filter(favorite => favorite.imdbid !== objectToCheck.imdbid);
         }
-        console.log(`Current favorites:`, favorites);
+
+        localStorage.setItem(`favorites`, JSON.stringify(favorites));
+        // OM man står i favorites och man togglar en favorit-ikon så renderas favorites-section om.
+        if (document.location.pathname.endsWith("favorites.html")) {
+            paginationModule.resetPages();
+            paginationModule.splitArrayIntoPages(favorites, `favorite`);
+        }
 
     } catch (error) {
         console.log(`Something went wrong at handleStorage: ${error}`);
@@ -38,4 +40,4 @@ function handleStorage (objectToCheck) {
     }
 }
 
-export default {getFavorites, handleStorage}
+export default { getFavorites, handleStorage }
