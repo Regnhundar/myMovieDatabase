@@ -1,6 +1,7 @@
 let trailerToView = 0;
 let playlist = [];
 
+
 function playerSetup(trailers) {
     trailers.forEach(trailer => {
         playlist.push(trailer)
@@ -10,10 +11,12 @@ function playerSetup(trailers) {
     
 }
 
+
 function renderTrailer() {
     const videoPlayer = document.querySelector(`#videoPlayer`);
     videoPlayer.src = playlist[trailerToView];
 }
+
 
 function previousTrailer() {
     if (trailerToView === 0) {
@@ -25,6 +28,7 @@ function previousTrailer() {
     document.querySelector(`#trailerCounter`).textContent = `${trailerToView + 1} / 5`
     renderTrailer();
 }
+
 
 function nextTrailer() {
     if (trailerToView === 4) {

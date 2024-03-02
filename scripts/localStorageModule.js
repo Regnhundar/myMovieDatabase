@@ -1,5 +1,6 @@
 import paginationModule from "./paginationModule.js"
 
+
 function getFavorites() {
 
     try {
@@ -13,6 +14,7 @@ function getFavorites() {
     }
 
 }
+
 
 function handleStorage(objectToCheck) {
 

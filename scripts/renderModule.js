@@ -1,14 +1,15 @@
 import localStorageModule from "./localStorageModule.js";
-import script from "./script.js";
+import script from "./app.js";
 import pagination from './paginationModule.js';
 import paginationModule from "./paginationModule.js";
 
 // array = array av filmer. Sökresultat, favoriter och topplistan.
 // container = en sträng. `toplist`, `search` eller `favorite`. Bestämmer vart allt ska hamna och heta. 
-function renderMovie(array, container) {
+function renderMovies(array, container) {
 
     const mainRef = document.querySelector(`#main`);
     let sectionRef = document.querySelector(`.${container}-section`);
+
     // Jag vill att favorite-sectionen ska uppdatera sitt innehåll direkt om man togglar ikonen. Det görs via att den här funktionen körs igen. 
     // Så för att undvika att sektionen växer behövs en kontroll.
     if (!sectionRef) {
@@ -25,20 +26,22 @@ function renderMovie(array, container) {
     // Loopar igenom arrayen och anropar createMovieCard som skapar korten och returnerar dem i en figure.
     array.forEach(movie => {
         const figureRef = createMovieCard(movie, container);
-
         sectionRef.appendChild(figureRef);
     });
-    // Kollar om det finns fler än 1 sida. Finns fler än 1 sida skapas navigation.
-    if (paginationModule.numberOfPages() > 1) {
-        const buttonWrapperRef = setUpPageNavigation(container);
-        sectionRef.appendChild(buttonWrapperRef);
 
+    // Kollar om det finns fler än 1 sida. Finns fler än 1 sida skapas navigation och returneras i en wrapper.
+    if (paginationModule.numberOfPages() > 1) {
+        const pagination = setUpPageNavigation(container);
+        sectionRef.appendChild(pagination);
     }
+
     mainRef.appendChild(sectionRef);
 
 }
 
+
 function createSectionTitle(container) {
+
     let sectionHeaderRef = document.createElement(`h2`);
     sectionHeaderRef.classList.add(`${container}-section__title`);
     sectionHeaderRef.id = `${container}Title`;
@@ -57,6 +60,7 @@ function createSectionTitle(container) {
     }
     return sectionHeaderRef;
 }
+
 
 function createMovieCard(movie, container) {
 
@@ -102,9 +106,11 @@ function createMovieCard(movie, container) {
     return figureRef;
 }
 
+
 function setUpPageNavigation (container) {
+
     const buttonWrapperRef = document.createElement(`nav`);
-    buttonWrapperRef.classList.add(`${container}-section__button-wrapper`);
+    buttonWrapperRef.classList.add(`${container}-section__navigation-wrapper`);
 
     const backButtonRef = document.createElement(`a`);
     backButtonRef.href = `#${container}Title`
@@ -114,7 +120,7 @@ function setUpPageNavigation (container) {
     backButtonRef.addEventListener(`click`, () => {
         pagination.previousPage(`${container}`)
     });
-    
+
     const pageCounterRef = document.createElement(`p`);
     pageCounterRef.classList.add(`${container}-section__page-counter`);
     pageCounterRef.id = `${container}Counter`
@@ -140,10 +146,10 @@ function setUpPageNavigation (container) {
     return buttonWrapperRef;
 }
 
+
 function renderMoreInfo(event, result) {
 
     event.preventDefault();
-
 
     const infoContainer = document.querySelector(`.more-info-container`);
 
@@ -164,35 +170,41 @@ function renderMoreInfo(event, result) {
             parentContainerRef = document.querySelector('#favoriteSection');
         }
 
-
         moreInfoContainerRef.classList.add(`more-info-container`);
 
         const infoWrapperRef = document.createElement(`div`);
         infoWrapperRef.classList.add(`more-info-container__info-wrapper`);
+
         const titleRef = document.createElement(`h3`);
         titleRef.classList.add(`more-info-container__title`);
         titleRef.textContent = result.title;
+
         infoWrapperRef.appendChild(titleRef);
 
         const directorRef = document.createElement(`p`);
         directorRef.classList.add(`more-info-container__director`);
         directorRef.textContent = `Director: ${result.director}`;
+
         infoWrapperRef.appendChild(directorRef);
 
         const actorsRef = document.createElement(`p`);
         actorsRef.classList.add(`more-info-container__actor`);
         actorsRef.textContent = `Actors: ${result.actors}`;
+
         infoWrapperRef.appendChild(actorsRef);
 
         const runtimeRef = document.createElement(`p`);
         runtimeRef.classList.add(`more-info-container__runtime`);
         runtimeRef.textContent = `Runtime: ${result.runtime}`;
+
         infoWrapperRef.appendChild(runtimeRef);
 
         const ratingRef = document.createElement(`p`);
         ratingRef.classList.add(`more-info-container__rating`);
         ratingRef.textContent = `IMDb Rating: ${result.imdbrating}`;
+
         infoWrapperRef.appendChild(ratingRef);
+
         moreInfoContainerRef.appendChild(infoWrapperRef);
 
         const plotAndPosterContainerRef = document.createElement(`div`);
@@ -226,10 +238,8 @@ function renderMoreInfo(event, result) {
 }
 
 
-
-
-
 function favoriteIconToggle(event) {
+
     let favoriteIcon = event.target;
     if (favoriteIcon.src.endsWith(`favorite.svg`)) {
         favoriteIcon.src = `./assets/notFavorite.svg`
@@ -241,6 +251,7 @@ function favoriteIconToggle(event) {
     }
 }
 
+
 function showContainer(container) {
 
     const topListContainerRef = document.querySelector(`#toplistSection`);
@@ -249,6 +260,7 @@ function showContainer(container) {
     const favoriteContainerRef = document.querySelector(`#favoriteSection`);
 
     if (container === `notSearching`) {
+
         if (trailerContainerRef) {
             topListContainerRef.classList.remove(`d-none`);
             trailerContainerRef.classList.remove(`d-none`);
@@ -258,8 +270,8 @@ function showContainer(container) {
             favoriteContainerRef.classList.remove(`d-none`);
             searchResultContainerRef.remove();
         }
-
     }
+
     else if (container === `searching`) {
 
         if (favoriteContainerRef) {
@@ -270,9 +282,8 @@ function showContainer(container) {
             trailerContainerRef.classList.add(`d-none`);
         }
     }
-
 }
 
 
 
-export default { renderMovie, renderMoreInfo, favoriteIconToggle, showContainer }
+export default { renderMovies, renderMoreInfo, favoriteIconToggle, showContainer }

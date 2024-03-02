@@ -20,6 +20,7 @@ window.addEventListener(`DOMContentLoaded`, () => {
 
 
 async function populateTrailers() {
+
     try {
         const trailers = [];
         const data = await apiModule.getData(`https://santosnr6.github.io/Data/movies.json`);
@@ -43,6 +44,7 @@ async function populateTrailers() {
 
 
 async function populateTopTwenty() {
+
     try {
         const topTwenty = [];
         const data = await apiModule.getData(`https://santosnr6.github.io/Data/movies.json`);
@@ -91,9 +93,19 @@ async function searchForMovie(event) {
             const data = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&s=${searchWord}`);
             let standardizedData = standardizeApiKeys(data.Search);
             renderModule.showContainer(`searching`);
-            renderModule.renderMovie(standardizedData, `search`);
+            paginationModule.resetCurrentPage();
+            paginationModule.resetPages();
+            paginationModule.splitArrayIntoPages(standardizedData, `search`);
         } else {
+            paginationModule.resetPages();
+            paginationModule.resetCurrentPage();
             renderModule.showContainer(`notSearching`);
+            if (document.querySelector(`#trailerSection`)) {
+                populateTopTwenty();
+            }
+            else if (document.location.pathname.endsWith("favorites.html")) {
+                populateFavorites();
+            }
         }
     } catch (error) {
         console.log(`Something went wrong at searchForMovie: ${error}`);
@@ -108,6 +120,7 @@ function populateFavorites() {
 
 
 async function getMoreInfo(event) {
+
     try {
         let moreInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&plot=full&i=${event.currentTarget.dataset.imdbid}`);
         moreInfo = standardizeApiKeys(moreInfo);
@@ -118,7 +131,9 @@ async function getMoreInfo(event) {
 }
 
 async function sendToStorage(event) {
+
     event.stopPropagation(); // För att förhindra att eventlystnaren på containern också triggas 
+
     try {
         renderModule.favoriteIconToggle(event);
         let favoriteInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&i=${event.currentTarget.dataset.imdbid}`);
