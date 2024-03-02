@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/styles/style.css">
     <title>Movietime</title>
 </head>
-<body>        
+
+<body>
     <div class="wrapper">
         <header class="header">
-            <h1 class="header__title"><span class="header__title-span1">MY</span> <span class="header__title-span2">MOVIE</span> <span class="header__title-span3">DATABASE</span></h1>
+            <h1 class="header__title"><span class="header__title-span1">MY</span> <span
+                    class="header__title-span2">MOVIE</span> <span class="header__title-span3">DATABASE</span></h1>
         </header>
         <nav class="utility-bar">
             <input type="search" class="utility-bar__searchbar" id="searchbar" placeholder="Find a movie...">
-            <a href="favorites.html" class="utility-bar__favorites-navigation-element" id="favoritesButton">Favorites</a>
+            <a title="Go to favorites!" href="favorites.html" class="utility-bar__navigation-button" id="favoritesButton">Favorites</a>
         </nav>
         <main class="main" id="main">
 
@@ -21,13 +24,18 @@
 
             <section class="trailer-section" id="trailerSection">
                 <h2 class="trailer-section__title">
-                    <span class="trailer-section__title-background trailer-section__title-background--top">TOP</span> 
-                    <span class="trailer-section__title-background trailer-section__title-background--bottom">TRAILERS</span>
+                    <span class="trailer-section__title-background trailer-section__title-background--top">TOP</span>
+                    <span
+                        class="trailer-section__title-background trailer-section__title-background--bottom">TRAILERS</span>
                 </h2>
 
-                    <iframe title="trailer videoplayer" class="trailer-section__video-player" id="videoPlayer" src="" frameborder="0"></iframe>
-                    <button class="trailer-section__navigation-button trailer-section__navigation-button--left" id="previousTrailer">&#10094; BACK</button>
-                    <button class="trailer-section__navigation-button trailer-section__navigation-button--right" id="nextTrailer">NEXT &#10095;</button>
+                <iframe title="trailer videoplayer" class="trailer-section__video-player" id="videoPlayer" src=""
+                    frameborder="0"></iframe>
+                <nav class="trailer-section__navigation-wrapper">
+                    <a class="trailer-section__navigation-button" id="previousTrailer">&#9664; BACK</a>
+                    <p class="trailer-section__trailer-counter" id="trailerCounter">1 / 5</p>
+                    <a class="trailer-section__navigation-button" id="nextTrailer">NEXT &#9654;</a>
+                </nav>
 
             </section>
 
@@ -38,4 +46,5 @@
     </div>
     <script type="module" src="./scripts/script.js"></script>
 </body>
+
 </html>

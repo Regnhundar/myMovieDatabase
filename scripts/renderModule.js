@@ -3,22 +3,42 @@ import script from "./script.js";
 import pagination from './paginationModule.js';
 import paginationModule from "./paginationModule.js";
 
-
-function renderMovie (array, container) {
+// array = array av filmer. Sökresultat, favoriter och topplistan.
+// container = en sträng. `toplist`, `search` eller `favorite`. Bestämmer vart allt ska hamna och heta. 
+function renderMovie(array, container) {
 
     const mainRef = document.querySelector(`#main`);
-    const  sectionContainerRef = document.querySelector(`.${container}-section`);
-// Jag vill att favorites-sectionen ska uppdatera sitt innehåll direkt om man togglar ikonen. Det görs via att den här funktionen körs igen. 
-// Så för att undvika att fler sektioner skapas tar vi bort den gamla innan den nya skapas.
-    if (sectionContainerRef) {
-        sectionContainerRef.remove(); 
+    let sectionRef = document.querySelector(`.${container}-section`);
+    // Jag vill att favorite-sectionen ska uppdatera sitt innehåll direkt om man togglar ikonen. Det görs via att den här funktionen körs igen. 
+    // Så för att undvika att sektionen växer behövs en kontroll.
+    if (!sectionRef) {
+        sectionRef = document.createElement(`section`);
+        sectionRef.classList.add(`${container}-section`);
+        sectionRef.id = `${container}Section`;
+    } else {
+        sectionRef.innerHTML = ``;
     }
-    
-    let sectionRef = document.createElement(`section`);
-    sectionRef.classList.add(`${container}-section`);
-    sectionRef.id = `${container}Section`;
-    sectionRef.innerHTML = ``;
-    
+
+    const sectionHeadlineRef = createSectionTitle(container);
+    sectionRef.appendChild(sectionHeadlineRef);
+ 
+    // Loopar igenom arrayen och anropar createMovieCard som skapar korten och returnerar dem i en figure.
+    array.forEach(movie => {
+        const figureRef = createMovieCard(movie, container);
+
+        sectionRef.appendChild(figureRef);
+    });
+    // Kollar om det finns fler än 1 sida. Finns fler än 1 sida skapas navigation.
+    if (paginationModule.numberOfPages() > 1) {
+        const buttonWrapperRef = setUpPageNavigation(container);
+        sectionRef.appendChild(buttonWrapperRef);
+
+    }
+    mainRef.appendChild(sectionRef);
+
+}
+
+function createSectionTitle(container) {
     let sectionHeaderRef = document.createElement(`h2`);
     sectionHeaderRef.classList.add(`${container}-section__title`);
     sectionHeaderRef.id = `${container}Title`;
@@ -35,82 +55,103 @@ function renderMovie (array, container) {
         sectionHeaderRef.innerHTML = `<span class="${container}-section__title-background ${container}-section__title-background--top">YOUR</span> 
                                       <span class="${container}-section__title-background ${container}-section__title-background--bottom">RESULTS:</span>`;
     }
-    sectionRef.appendChild(sectionHeaderRef);
+    return sectionHeaderRef;
+}
 
-    array.forEach(movie => {
+function createMovieCard(movie, container) {
 
-        let figureRef = document.createElement(`figure`);
-        figureRef.addEventListener(`click`, script.getMoreInfo);
+    let figureRef = document.createElement(`figure`);
+    figureRef.addEventListener(`click`, script.getMoreInfo);
+    figureRef.classList.add(`${container}-section__movie-container`);
+    figureRef.dataset.imdbid = movie.imdbid;
+    figureRef.title = `Click for more info!`
 
-        figureRef.classList.add(`${container}-section__movie-container`);
-        figureRef.dataset.imdbid = movie.imdbid;
-        let posterRef = document.createElement(`img`);
-        posterRef.classList.add(`${container}-section__image`)
-        posterRef.src = `${movie.poster}`;
-        posterRef.alt= `Cover of the movie ${movie.title}`;
-        let favoriteRef = document.createElement(`img`);
-        favoriteRef.classList.add(`${container}-section__favorite-icon`, `d-none`);
-        figureRef.addEventListener(`mouseenter`, () => {
-            favoriteRef.classList.remove(`d-none`);
-        });
-        figureRef.addEventListener(`mouseleave`, () => {
-            favoriteRef.classList.add(`d-none`);
-        });
-        favoriteRef.dataset.imdbid = movie.imdbid;
-        if (localStorageModule.getFavorites().some(favorite => favorite.imdbid === movie.imdbid)){
-            favoriteRef.src = `./assets/favorite.svg`;
-            favoriteRef.alt = `Remove from favorites!`
-        } else {
-            favoriteRef.src = `./assets/notFavorite.svg`;
-            favoriteRef.alt = `Add to favorites!`
-        }
-        favoriteRef.addEventListener(`click`, script.sendToStorage);
-        let captionRef = document.createElement(`figcaption`);
-        captionRef.classList.add(`${container}-section__movie-title`);
-        captionRef.textContent = movie.title;
-
-        figureRef.appendChild(posterRef);
-        figureRef.appendChild(favoriteRef);
-        figureRef.appendChild(captionRef);
-        
-        sectionRef.appendChild(figureRef);
+    let posterRef = document.createElement(`img`);
+    posterRef.classList.add(`${container}-section__image`)
+    posterRef.src = `${movie.poster}`;
+    posterRef.alt = `Cover of the movie ${movie.title}`;
+    
+    let favoriteRef = document.createElement(`img`);
+    favoriteRef.classList.add(`${container}-section__favorite-icon`, `d-none`);
+    figureRef.addEventListener(`mouseenter`, () => {
+        favoriteRef.classList.remove(`d-none`);
     });
+    figureRef.addEventListener(`mouseleave`, () => {
+        favoriteRef.classList.add(`d-none`);
+    });
+    favoriteRef.dataset.imdbid = movie.imdbid;
+    if (localStorageModule.getFavorites().some(favorite => favorite.imdbid === movie.imdbid)) {
+        favoriteRef.src = `./assets/favorite.svg`;
+        favoriteRef.alt = `Remove from favorites!`
+        favoriteRef.title = `Remove from favorites`
+    } else {
+        favoriteRef.src = `./assets/notFavorite.svg`;
+        favoriteRef.alt = `Add to favorites!`
+        favoriteRef.title = `Add to favorites`
+    }
+    favoriteRef.addEventListener(`click`, script.sendToStorage);
 
-    if (paginationModule.numberOfPages() > 1) {
-    const buttonWrapperRef = document.createElement(`div`);
+    let captionRef = document.createElement(`figcaption`);
+    captionRef.classList.add(`${container}-section__movie-title`);
+    captionRef.textContent = movie.title;
+
+    figureRef.appendChild(posterRef);
+    figureRef.appendChild(favoriteRef);
+    figureRef.appendChild(captionRef);
+
+    return figureRef;
+}
+
+function setUpPageNavigation (container) {
+    const buttonWrapperRef = document.createElement(`nav`);
     buttonWrapperRef.classList.add(`${container}-section__button-wrapper`);
 
     const backButtonRef = document.createElement(`a`);
     backButtonRef.href = `#${container}Title`
-    backButtonRef.classList.add(`${container}-section__navigation-button`);
+    backButtonRef.id = `${container}BackButton`
+    backButtonRef.classList.add(`${container}-section__navigation-button`, `${container}-section__navigation-button--left`);
     backButtonRef.textContent = `\u25C0 BACK`;
     backButtonRef.addEventListener(`click`, () => {
-        pagination.previousPage(`${container}`)});
+        pagination.previousPage(`${container}`)
+    });
+    
+    const pageCounterRef = document.createElement(`p`);
+    pageCounterRef.classList.add(`${container}-section__page-counter`);
+    pageCounterRef.id = `${container}Counter`
+    if (container === `toplist`) {
+        pageCounterRef.textContent = `1 / ${paginationModule.numberOfPages()}`;
+    } else {
+        pageCounterRef.textContent = `${paginationModule.getCurrentPage()} / ${paginationModule.numberOfPages()}`;
+    }
+
     const nextButtonRef = document.createElement(`a`);
     nextButtonRef.href = `#${container}Title`
-    nextButtonRef.classList.add(`${container}-section__navigation-button`);
-    nextButtonRef.textContent= `NEXT \u25B6`;
+    nextButtonRef.classList.add(`${container}-section__navigation-button`, `${container}-section__navigation-button--right`);
+    nextButtonRef.id = `${container}NextButton`
+    nextButtonRef.textContent = `NEXT \u25B6`;
     nextButtonRef.addEventListener(`click`, () => {
-        pagination.nextPage(`${container}`)});
+        pagination.nextPage(`${container}`)
+    });
 
     buttonWrapperRef.appendChild(backButtonRef);
+    buttonWrapperRef.appendChild(pageCounterRef);
     buttonWrapperRef.appendChild(nextButtonRef);
-    sectionRef.appendChild(buttonWrapperRef);
-    }
-    mainRef.appendChild(sectionRef);
+
+    return buttonWrapperRef;
 }
 
-function renderMoreInfo (event, result) {
+function renderMoreInfo(event, result) {
 
     event.preventDefault();
 
-    const  infoContainer = document.querySelector(`.more-info-container`);
+
+    const infoContainer = document.querySelector(`.more-info-container`);
 
     if (infoContainer) {
         infoContainer.remove();
     }
 
-    else {    
+    else {
         const moreInfoContainerRef = document.createElement(`article`);
         let parentContainerRef = document.querySelector(`#toplistSection`);
         const searchResultContainer = event.target.closest('.search-section');
@@ -147,7 +188,7 @@ function renderMoreInfo (event, result) {
         runtimeRef.classList.add(`more-info-container__runtime`);
         runtimeRef.textContent = `Runtime: ${result.runtime}`;
         infoWrapperRef.appendChild(runtimeRef);
-        
+
         const ratingRef = document.createElement(`p`);
         ratingRef.classList.add(`more-info-container__rating`);
         ratingRef.textContent = `IMDb Rating: ${result.imdbrating}`;
@@ -161,7 +202,7 @@ function renderMoreInfo (event, result) {
         posterRef.classList.add(`more-info-container__poster`);
         posterRef.src = result.poster;
         posterRef.alt = `Cover of the movie ${result.title}`;
-        
+
         plotAndPosterContainerRef.appendChild(posterRef);
 
         const plotRef = document.createElement(`p`);
@@ -173,7 +214,7 @@ function renderMoreInfo (event, result) {
         moreInfoContainerRef.appendChild(plotAndPosterContainerRef);
 
         const containerRect = parentContainerRef.getBoundingClientRect();
-        const offsetX = containerRect.width / 2; 
+        const offsetX = containerRect.width / 2;
         const offsetY = event.clientY - containerRect.top;
 
 
@@ -184,17 +225,23 @@ function renderMoreInfo (event, result) {
     }
 }
 
-function favoriteIconToggle (event) {
+
+
+
+
+function favoriteIconToggle(event) {
     let favoriteIcon = event.target;
     if (favoriteIcon.src.endsWith(`favorite.svg`)) {
         favoriteIcon.src = `./assets/notFavorite.svg`
+        favoriteIcon.title = `Add to favorites`
     }
     else if (favoriteIcon.src.endsWith(`notFavorite.svg`)) {
         favoriteIcon.src = `./assets/favorite.svg`
+        favoriteIcon.title = `Remove from favorites`
     }
 }
 
-function showContainer (container) {
+function showContainer(container) {
 
     const topListContainerRef = document.querySelector(`#toplistSection`);
     const searchResultContainerRef = document.querySelector(`#searchSection`);
@@ -211,11 +258,11 @@ function showContainer (container) {
             favoriteContainerRef.classList.remove(`d-none`);
             searchResultContainerRef.remove();
         }
-       
+
     }
     else if (container === `searching`) {
 
-        if (favoriteContainerRef) {     
+        if (favoriteContainerRef) {
             favoriteContainerRef.classList.add(`d-none`);
         }
         else if (trailerContainerRef) {
@@ -228,4 +275,4 @@ function showContainer (container) {
 
 
 
-export default {renderMovie, renderMoreInfo, favoriteIconToggle, showContainer}
+export default { renderMovie, renderMoreInfo, favoriteIconToggle, showContainer }
