@@ -4,42 +4,79 @@ let currentPage = 1;
 
 let pages = [];
 
+
+// Tar emot en array innan den renderas ut på sidan. Gör en array med arrayer som har högst 8 objekt per array.
 function splitArrayIntoPages(array, container) {
-    // pages = []
+    
     const itemsPerPage = 8;
     for (let i = 0; i < array.length; i += itemsPerPage) {
         pages.push(array.slice(i, i + itemsPerPage));
     }
-    renderModule.renderMovie(pages[currentPage - 1], container);
+
+    if (pages[currentPage - 1] === undefined) {
+        currentPage--;
+        if (currentPage === 0) {
+            currentPage = 1;
+        }
+    }console.log(numberOfPages());
+    renderModule.renderMovies(pages[currentPage - 1], container);
 }
 
-function numberOfPages () {
+
+function numberOfPages() {
+
     return pages.length;
 }
 
-function resetPages () {
+
+function getCurrentPage() {
+
+    return currentPage;
+}
+
+function resetCurrentPage () {
+    currentPage = 1;
+}
+
+function resetPages() {
     pages = [];
 }
 
+
 function previousPage(container) {
 
-    if(currentPage > 1) {
+    if (currentPage > 1) {
         currentPage--;
-        renderModule.renderMovie(pages[currentPage - 1], container)
     }
+    else {
+        currentPage = pages.length;
+    }
+    renderModule.renderMovies(pages[currentPage - 1], container);
+    updatePageNumber(container);
 }
+
 
 function nextPage(container) {
 
-    if(currentPage < pages.length) {
+    if (currentPage < pages.length) {
         currentPage++;
-        renderModule.renderMovie(pages[currentPage - 1], container)
+    }
+    else {
+        currentPage = 1;
+    }
+    renderModule.renderMovies(pages[currentPage - 1], container);
+    updatePageNumber(container);
+}
+
+
+function updatePageNumber(container) {
+
+    const pageCounterRef = document.querySelector(`#${container}Counter`);
+    pageCounterRef.textContent = `${currentPage} / ${pages.length}`;
+
+    if (currentPage > pages.length) {
+        currentPage = pages.length;
     }
 }
 
-function updatePaginationDisplay() {
-    const pageIndicatorRef = document.querySelector('#pageIndicator');
-    pageIndicatorRef.textContent = `Page ${ currentPage }`;
-}
- 
-export default { numberOfPages,resetPages,previousPage, nextPage, updatePaginationDisplay, splitArrayIntoPages };
+export default { resetCurrentPage, updatePageNumber, getCurrentPage, numberOfPages, resetPages, previousPage, nextPage, splitArrayIntoPages };
