@@ -3,10 +3,29 @@ import script from "./app.js";
 import pagination from './paginationModule.js';
 import paginationModule from "./paginationModule.js";
 
+function renderNotification(message, time) {
+    let utilitybarRef = document.querySelector(`#utilityBar`);
+    let messageRef = document.createElement(`h3`);
+    messageRef.classList.add(`utility-bar__notification`);
+    messageRef.textContent = message;
+    utilitybarRef.appendChild(messageRef);
+
+    setTimeout(() => {
+        messageRef.classList.add('show');
+    }, 100);
+
+    setTimeout(() => {
+        messageRef.classList.remove('show');
+        messageRef.addEventListener('transitionend', function () {
+            messageRef.remove();
+        });
+    }, time);
+}
+
 // array = array av filmer. Sökresultat, favoriter och topplistan.
 // container = en sträng. `toplist`, `search` eller `favorite`. Bestämmer vart allt ska hamna och heta. 
 function renderMovies(array, container) {
-
+    
     const mainRef = document.querySelector(`#main`);
     let sectionRef = document.querySelector(`.${container}-section`);
 
@@ -22,7 +41,7 @@ function renderMovies(array, container) {
 
     const sectionHeadlineRef = createSectionTitle(container);
     sectionRef.appendChild(sectionHeadlineRef);
- 
+
     // Loopar igenom arrayen och anropar createMovieCard som skapar korten och returnerar dem i en figure.
     array.forEach(movie => {
         const figureRef = createMovieCard(movie, container);
@@ -39,7 +58,6 @@ function renderMovies(array, container) {
 
 }
 
-
 function createSectionTitle(container) {
 
     let sectionHeaderRef = document.createElement(`h2`);
@@ -55,7 +73,7 @@ function createSectionTitle(container) {
                                       <span class="${container}-section__title-background ${container}-section__title-background--bottom">FAVORITES</span>`;
     }
     else if (container === `search`) {
-        sectionHeaderRef.innerHTML = `<span class="${container}-section__title-background ${container}-section__title-background--top">YOUR</span> 
+        sectionHeaderRef.innerHTML = `<span class="${container}-section__title-background ${container}-section__title-background--top">SEARCH</span> 
                                       <span class="${container}-section__title-background ${container}-section__title-background--bottom">RESULTS:</span>`;
     }
     return sectionHeaderRef;
@@ -74,7 +92,7 @@ function createMovieCard(movie, container) {
     posterRef.classList.add(`${container}-section__image`)
     posterRef.src = `${movie.poster}`;
     posterRef.alt = `Cover of the movie ${movie.title}`;
-    
+
     let favoriteRef = document.createElement(`img`);
     favoriteRef.classList.add(`${container}-section__favorite-icon`, `d-none`);
     figureRef.addEventListener(`mouseenter`, () => {
@@ -107,7 +125,7 @@ function createMovieCard(movie, container) {
 }
 
 
-function setUpPageNavigation (container) {
+function setUpPageNavigation(container) {
 
     const buttonWrapperRef = document.createElement(`nav`);
     buttonWrapperRef.classList.add(`${container}-section__navigation-wrapper`);
@@ -241,13 +259,18 @@ function renderMoreInfo(event, result) {
 function favoriteIconToggle(event) {
 
     let favoriteIcon = event.target;
+
     if (favoriteIcon.src.endsWith(`favorite.svg`)) {
-        favoriteIcon.src = `./assets/notFavorite.svg`
-        favoriteIcon.title = `Add to favorites`
+
+        renderNotification(`Removed from favorites!`, 1000);
+        favoriteIcon.src = `./assets/notFavorite.svg`;
+        favoriteIcon.title = `Add to favorites`;
+        
     }
     else if (favoriteIcon.src.endsWith(`notFavorite.svg`)) {
-        favoriteIcon.src = `./assets/favorite.svg`
-        favoriteIcon.title = `Remove from favorites`
+        renderNotification(`Added to favorites!`, 1000);
+        favoriteIcon.src = `./assets/favorite.svg`;
+        favoriteIcon.title = `Remove from favorites`;
     }
 }
 
@@ -286,4 +309,4 @@ function showContainer(container) {
 
 
 
-export default { renderMovies, renderMoreInfo, favoriteIconToggle, showContainer }
+export default { renderNotification, renderMovies, renderMoreInfo, favoriteIconToggle, showContainer }

@@ -10,6 +10,7 @@ window.addEventListener(`DOMContentLoaded`, () => {
 
     localStorageModule.getFavorites();
     if (document.querySelector(`#trailerSection`)) {
+        document.querySelector(`#favoritesButton`).addEventListener(`click`, checkoutFavorites);
         populateTrailers();
         populateTopTwenty();
     }
@@ -18,6 +19,15 @@ window.addEventListener(`DOMContentLoaded`, () => {
     }
 });
 
+function checkoutFavorites(event) {
+    event.preventDefault();
+    let favorites = localStorageModule.getFavorites();
+    if (favorites.length === 0) {
+        renderModule.renderNotification(`Empty. Add something.`, 3000);
+    } else {
+        window.location.href = "./favorites.html"
+    }
+}
 
 async function populateTrailers() {
 
@@ -131,10 +141,10 @@ async function getMoreInfo(event) {
 }
 
 async function sendToStorage(event) {
-
+    
     event.stopPropagation(); // För att förhindra att eventlystnaren på containern också triggas 
 
-    try {
+    try {   
         renderModule.favoriteIconToggle(event);
         let favoriteInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&i=${event.currentTarget.dataset.imdbid}`);
         favoriteInfo = standardizeApiKeys(favoriteInfo);
