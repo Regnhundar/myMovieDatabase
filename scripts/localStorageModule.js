@@ -17,7 +17,7 @@ function getFavorites() {
 
 
 function handleStorage(objectToCheck) {
-    
+
     try {
         let favorites = getFavorites();
         let checkForDuplicate = favorites.some(favorite => favorite.imdbid === objectToCheck.imdbid);
