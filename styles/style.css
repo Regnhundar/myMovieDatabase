@@ -29,22 +29,22 @@ body {
 
 ::-webkit-scrollbar {
     width: 20px;
-  }
-  
-  ::-webkit-scrollbar-track {
+}
+
+::-webkit-scrollbar-track {
     background-color: #262625;
-  }
-  
-  ::-webkit-scrollbar-thumb {
+}
+
+::-webkit-scrollbar-thumb {
     background: rgb(79, 76, 76);
     border-radius: 10px;
     border: 6px solid transparent;
     background-clip: content-box;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
+}
+
+::-webkit-scrollbar-thumb:hover {
     cursor: grab;
-  }
+}
 
 .wrapper {
     color: var(--cream);
@@ -56,7 +56,7 @@ body {
 
 .header,
 .footer {
-    margin: 2rem 0;
+    margin-top: 2rem;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -96,7 +96,10 @@ body {
 }
 
 .utility-bar {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 9fr;
+    grid-template-rows: repeat(2,1fr);
+    height: 5rem;
     align-items: center;
     padding: 1rem 0;
     position: sticky;
@@ -107,29 +110,51 @@ body {
 }
 
 .utility-bar__searchbar {
+    grid-area: auto / auto / auto / auto;
     background-color: var(--cream);
     border: 1px solid var(--cream);
+    width: 14rem;
     height: 3rem;
     padding: 1rem;
 }
 
 .utility-bar__navigation-button {
+    grid-area: auto / auto / auto / auto;
     display: inline-block;
     text-align: center;
     height: 3rem;
-    min-width: 6.5rem;
+    width: 6.5rem;
     margin-left: 1rem;
     color: var(--dark);
     background-color: var(--cream);
     padding: 1rem;
     border: 2px solid var(--cream);
     text-decoration: none;
+    font-weight: 500;
 }
 
 .utility-bar__navigation-button:hover {
     color: var(--cream);
     background-color: var(--dark);
     border: 2px solid var(--cream);
+}
+
+.utility-bar__notification {
+
+    max-width: 25rem;
+    left: 0;
+    grid-area: auto / auto / auto / span 2;
+    border: 3px solid var(--dark);
+    border-left: 3px solid var(--red);
+    background-color: var(--red);
+    font-size: 2rem;
+    padding: .5rem .5rem .2rem .5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.utility-bar__notification.show {
+    opacity: 1;
 }
 
 .trailer-section::before {
@@ -149,7 +174,6 @@ body {
     display: grid;
     gap: 1rem;
     padding: 8rem 2rem;
-
     grid-template-columns: repeat(3, 1fr);
 }
 
@@ -171,12 +195,12 @@ body {
 .search-section__title {
     max-height: clamp(2rem, .1vw, 3rem);
     transform: skew(-10deg);
-    /* grid-area: auto / auto / span 1 / span 3; */
     display: grid;
     margin-bottom: 6rem;
     position: relative;
     top: 0%;
     z-index: 10;
+
 }
 
 .trailer-section__title-background--top,
@@ -239,9 +263,11 @@ body {
         "movie movie movie movie"
         "navigation navigation navigation navigation";
     padding: 8rem 2rem;
-    margin: 5rem 0;
 }
 
+.toplist-section {
+    margin: 5rem 0;
+}
 
 .toplist-section::after,
 .favorite-section::after,
@@ -490,12 +516,24 @@ body {
     .favorite-section::after,
     .search-section::after {
         transform: skewY(-9deg);
-        height: 94%;
+        height: 92%;
         top: 6%;
+    }
+
+    .trailer-section::before {
+        transform: skewY(10deg);
+        height: 90%;
+        top: 10%;
+    }
+    .trailer-section::after {
+        transform: skewY(-9deg);
+        height: 88%;
+        top: 12%;
     }
 }
 
 @media screen and (max-width: 900px) {
+
     .wrapper {
         padding: 0 2rem;
     }
@@ -519,6 +557,23 @@ body {
             "navigation navigation";
     }
 
+    .trailer-section::before {
+        transform: skewY(10deg);
+        height: 88%;
+        top: 16%;
+    }
+    .trailer-section::after {
+        transform: skewY(-9.5deg);
+        height: 82%;
+        top: 19%;
+    }
+
+    .toplist-section__title,
+    .favorite-section__title,
+    .search-section__title {
+        margin-bottom: 2rem;
+    }
+
     .trailer-section__title-background--top,
     .toplist-section__title-background--top,
     .favorite-section__title-background--top,
@@ -533,7 +588,6 @@ body {
     .search-section__title-background--bottom {
         padding: .5rem .5rem 0 .5rem;
     }
-
 
     .more-info-container {
         grid-template-columns: 1fr;
@@ -555,10 +609,10 @@ body {
         margin-bottom: 1rem;
     }
 
-
 }
 
 @media screen and (max-width: 650px) {
+
     .wrapper {
         padding: .5rem .5rem;
         margin: 0 auto;
@@ -566,7 +620,8 @@ body {
 
     .toplist-section,
     .search-section,
-    .favorite-section {
+    .favorite-section,
+    .trailer-section {
         padding: 5rem .5rem;
         gap: .7rem;
     }
@@ -597,6 +652,9 @@ body {
 
 @media screen and (max-width: 400px) {
 
+    .notification-container__notification {
+        font-size: 1.5rem;
+    }
     .footer__home-navigation {
         padding: 1rem;
     }
