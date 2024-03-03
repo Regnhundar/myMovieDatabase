@@ -231,7 +231,6 @@ function renderMoreInfo(event, result) {
         const closeButtonRef = document.createElement(`button`);
         closeButtonRef.classList.add(`more-info-container__close-button`);
         closeButtonRef.addEventListener(`click`, () => {
-            console.log(infoContainer);
             document.querySelector(`.more-info-container`).remove();
         })
         closeButtonRef.textContent = `CLOSE`

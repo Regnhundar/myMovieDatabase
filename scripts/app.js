@@ -15,7 +15,6 @@ window.addEventListener(`DOMContentLoaded`, () => {
         populateTopTwenty();
     }
     else if (document.location.pathname.endsWith("favorites.html")) {
-        console.log(`Favorites`);
         populateFavorites();
     }
 });
