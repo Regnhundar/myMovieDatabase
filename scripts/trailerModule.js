@@ -8,7 +8,7 @@ function playerSetup(trailers) {
     });
     document.querySelector(`#previousTrailer`).addEventListener(`click`, previousTrailer);
     document.querySelector(`#nextTrailer`).addEventListener(`click`, nextTrailer);
-    
+
 }
 
 
