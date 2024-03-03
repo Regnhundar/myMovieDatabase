@@ -15,17 +15,19 @@ window.addEventListener(`DOMContentLoaded`, () => {
         populateTopTwenty();
     }
     else if (document.location.pathname.endsWith("favorites.html")) {
+        console.log(`Favorites`);
         populateFavorites();
     }
 });
 
+// Kollar ifall du har lagt till någon favorit. Knappen borde kanske ha annan styling när den är tom också.
 function checkoutFavorites(event) {
     event.preventDefault();
     let favorites = localStorageModule.getFavorites();
     if (favorites.length === 0) {
         renderModule.renderNotification(`Empty. Add something.`, 3000);
     } else {
-        window.location.href = "./favorites.html"
+        window.location.href = "favorites.html"
     }
 }
 
@@ -128,7 +130,6 @@ function populateFavorites() {
 
 }
 
-
 async function getMoreInfo(event) {
 
     try {
@@ -141,10 +142,10 @@ async function getMoreInfo(event) {
 }
 
 async function sendToStorage(event) {
-    
+
     event.stopPropagation(); // För att förhindra att eventlystnaren på containern också triggas 
 
-    try {   
+    try {
         renderModule.favoriteIconToggle(event);
         let favoriteInfo = await apiModule.getData(`http://www.omdbapi.com/?apikey=ea3e4608&i=${event.currentTarget.dataset.imdbid}`);
         favoriteInfo = standardizeApiKeys(favoriteInfo);

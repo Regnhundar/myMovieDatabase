@@ -7,18 +7,19 @@ let pages = [];
 
 // Tar emot en array innan den renderas ut på sidan. Gör en array med arrayer som har högst 8 objekt per array.
 function splitArrayIntoPages(array, container) {
-    
+
     const itemsPerPage = 8;
     for (let i = 0; i < array.length; i += itemsPerPage) {
         pages.push(array.slice(i, i + itemsPerPage));
     }
-
+    // Failsafe ifall du står i favorites och tar bort favoriter och på så vis tömmer sidor.
     if (pages[currentPage - 1] === undefined) {
         currentPage--;
         if (currentPage === 0) {
             currentPage = 1;
         }
-    }console.log(numberOfPages());
+    }
+
     renderModule.renderMovies(pages[currentPage - 1], container);
 }
 
@@ -34,7 +35,7 @@ function getCurrentPage() {
     return currentPage;
 }
 
-function resetCurrentPage () {
+function resetCurrentPage() {
     currentPage = 1;
 }
 

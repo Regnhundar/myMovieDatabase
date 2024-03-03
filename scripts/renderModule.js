@@ -3,6 +3,7 @@ import script from "./app.js";
 import pagination from './paginationModule.js';
 import paginationModule from "./paginationModule.js";
 
+
 function renderNotification(message, time) {
     let utilitybarRef = document.querySelector(`#utilityBar`);
     let messageRef = document.createElement(`h3`);
@@ -16,7 +17,7 @@ function renderNotification(message, time) {
 
     setTimeout(() => {
         messageRef.classList.remove('show');
-        messageRef.addEventListener('transitionend', function () {
+        messageRef.addEventListener('transitionend', () => {
             messageRef.remove();
         });
     }, time);
@@ -190,6 +191,8 @@ function renderMoreInfo(event, result) {
 
         moreInfoContainerRef.classList.add(`more-info-container`);
 
+
+
         const infoWrapperRef = document.createElement(`div`);
         infoWrapperRef.classList.add(`more-info-container__info-wrapper`);
 
@@ -224,6 +227,15 @@ function renderMoreInfo(event, result) {
         infoWrapperRef.appendChild(ratingRef);
 
         moreInfoContainerRef.appendChild(infoWrapperRef);
+
+        const closeButtonRef = document.createElement(`button`);
+        closeButtonRef.classList.add(`more-info-container__close-button`);
+        closeButtonRef.addEventListener(`click`, () => {
+            console.log(infoContainer);
+            document.querySelector(`.more-info-container`).remove();
+        })
+        closeButtonRef.textContent = `CLOSE`
+        moreInfoContainerRef.appendChild(closeButtonRef);
 
         const plotAndPosterContainerRef = document.createElement(`div`);
         plotAndPosterContainerRef.classList.add(`more-info-container__plot-and-poster-wrapper`);
@@ -262,13 +274,13 @@ function favoriteIconToggle(event) {
 
     if (favoriteIcon.src.endsWith(`favorite.svg`)) {
 
-        renderNotification(`Removed from favorites!`, 1000);
+        renderNotification(`Removed from favorites!`, 1300);
         favoriteIcon.src = `./assets/notFavorite.svg`;
         favoriteIcon.title = `Add to favorites`;
         
     }
     else if (favoriteIcon.src.endsWith(`notFavorite.svg`)) {
-        renderNotification(`Added to favorites!`, 1000);
+        renderNotification(`Added to favorites!`, 1300);
         favoriteIcon.src = `./assets/favorite.svg`;
         favoriteIcon.title = `Remove from favorites`;
     }
