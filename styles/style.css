@@ -54,7 +54,6 @@ body {
 }
 
 .wrapper {
-    max-width: 90%;
     margin: 2rem auto;
     padding: 2rem;
 }
@@ -77,13 +76,13 @@ body {
 .header__title--cream {
     background-color: var(--cream);
     color: var(--dark);
-    font-size: clamp(2rem, 4vw, 3rem);
+    font-size: 3rem;
     padding: .5rem .5rem 0 .5rem;
 }
 
 .header__title--orange {
     background-color: var(--orange);
-    font-size: clamp(5rem, 11vw, 12rem);
+    font-size: 12rem;
     padding: 1rem 1rem 0 1rem;
     margin: .5rem;
 }
@@ -149,11 +148,11 @@ body {
 
 .utility-bar__notification {
     display: inline;
-    max-width: 25rem;
+    width: fit-content;
     left: 0;
     grid-area: auto / auto / auto / span 2;
     border: 3px solid var(--dark);
-    border-left: 3px solid var(--orange);
+    border-left: none;
     background-color: var(--orange);
     font-size: 2rem;
     padding: .5rem .5rem .2rem .5rem;
@@ -307,7 +306,7 @@ body {
     grid-template-rows: repeat(4, 1fr);
     grid-template-columns: repeat(2, 1fr);
     background-color: var(--passpartou);
-    padding: 1rem;
+    padding: .5rem;
     transition: var(--hover);
 }
 
@@ -315,8 +314,8 @@ body {
 .search-section__movie-container:hover,
 .favorite-section__movie-container:hover {
     cursor: pointer;
-    scale: 1.03;
-    box-shadow: 0 0 0 1px black;
+    scale: 1.02;
+    box-shadow: 0 0 0 1px var(--darker);
 }
 
 .toplist-section__favorite-icon,
@@ -361,7 +360,7 @@ body {
 .trailer-section__navigation-wrapper,
 .toplist-section__navigation-wrapper,
 .favorite-section__navigation-wrapper {
-    font-size: clamp(1.1rem, 3vw, 2rem);
+    font-size: 1.5rem;
     position: relative;
     z-index: 10;
     display: grid;
@@ -433,13 +432,16 @@ body {
 .more-info-container {
     z-index: 999;
     position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     display: grid;
+    border: 2px solid var(--cream);
     grid-template-columns: .7fr 1.3fr;
     background-color: var(--dark);
     color: var(--cream);
-    padding: 4rem 2rem;
-    margin: 2rem;
-    width: inherit;
+    padding: 2rem;
+    max-width: 1440px;
+    width: 80%;
 }
 
 .more-info-container__close-button {
@@ -447,10 +449,7 @@ body {
     right: 2rem;
     top: 2rem;
     position: absolute;
-    width: fit-content;
-    height: fit-content;
     padding: 1rem;
-    text-align: center;
     background-color: var(--orange);
     color: var(--cream);
     font-weight: bold;
@@ -520,7 +519,48 @@ body {
     display: none;
 }
 
-@media screen and (max-width: 1200px) {
+
+@media screen and (max-width: 1600px) {
+    .wrapper {
+        max-width: 85%;
+    }
+
+    .trailer-section::before {
+        transform: skewY(10deg);
+        height: 80%;
+        top: 17%;
+    }
+
+    .trailer-section::after {
+        transform: skewY(-9deg);
+        height: 85%;
+        top: 12%;
+    }
+
+    .toplist-section,
+    .search-section,
+    .favorite-section {
+        gap: 1rem;
+        min-height: 84rem;
+
+    }
+
+}
+
+
+@media screen and (max-width: 1400px) {
+
+    .wrapper {
+        max-width: 90%;
+    }
+
+    .header__title--cream {
+        font-size: 2.5rem;
+    }
+
+    .header__title--orange {
+        font-size: 10rem;
+    }
 
     .toplist-section,
     .search-section,
@@ -564,10 +604,25 @@ body {
     }
 }
 
+@media screen and (max-width: 1200px) {
+    .wrapper {
+        max-width: 98%;
+    }
+}
+
 @media screen and (max-width: 900px) {
 
     .wrapper {
+
         padding: 0 2rem;
+    }
+
+    .header__title--cream {
+        font-size: 2rem;
+    }
+
+    .header__title--orange {
+        font-size: 8rem;
     }
 
     .main {
@@ -601,6 +656,10 @@ body {
         top: 19%;
     }
 
+    .trailer-section__video-player {
+        width: 98%;
+    }
+
     .toplist-section__title,
     .favorite-section__title,
     .search-section__title {
@@ -623,12 +682,15 @@ body {
     }
 
     .more-info-container {
+   
+        width: 98%;
         padding-top: 5rem;
         grid-template-columns: 1fr;
     }
 
     .more-info-container__close-button {
-        right: 2rem;
+        justify-self: start;
+        right: 1rem;
         top: 1rem;
     }
 
@@ -637,8 +699,6 @@ body {
     }
 
     .more-info-container__poster {
-        aspect-ratio: 3/2;
-        object-fit: scale-down;
         justify-self: center;
         margin-bottom: 1rem;
     }
@@ -648,8 +708,6 @@ body {
 @media screen and (max-width: 650px) {
 
     .wrapper {
-        max-width: 95%;
-        margin: auto;
         padding: 0;
     }
 
@@ -660,6 +718,13 @@ body {
         margin: .5rem;
     }
 
+    .utility-bar__searchbar {
+        width: 60vw;
+    }
+
+    .utility-bar__navigation-button {
+        width: 28vw;
+    }
 
     .toplist-section,
     .search-section,
@@ -673,19 +738,13 @@ body {
         padding: 5rem .5rem;
     }
 
-    .trailer-section__video-player {
-        width: 98%;
-    }
-
     .more-info-container {
         padding: 5rem 1rem 1rem 1rem;
-        margin: 0.5rem;
     }
 
     .toplist-section__movie-container,
     .search-section__movie-container,
     .favorite-section__movie-container {
-        padding: .5rem;
         aspect-ratio: 25/41;
     }
 
@@ -695,46 +754,44 @@ body {
         top: 1rem;
         right: 1rem;
     }
-}
 
-@media screen and (max-width: 400px) {
-
-    .utility-bar__notification {
-        font-size: 1.2rem;
+    .search-section__navigation-wrapper,
+    .trailer-section__navigation-wrapper,
+    .toplist-section__navigation-wrapper,
+    .favorite-section__navigation-wrapper {
+        font-size: 1.1rem;
     }
 
-    .footer__home-navigation {
-        padding: 1rem;
-    }
-}
 
-@media screen and (max-width: 350px) {
-    .utility-bar__searchbar {
-        width: 60vw;
+
+    @media screen and (max-width: 400px) {
+
+        .utility-bar__notification {
+            font-size: 1.2rem;
+        }
+
+        .footer__home-navigation {
+            padding: 1rem;
+        }
     }
 
-    .utility-bar__navigation-button {
-        width: 30vw;
-    }
-}
+    @media screen and (max-width: 310px) {
 
-@media screen and (max-width: 310px) {
-
-    .toplist-section,
-    .search-section,
-    .favorite-section {
-        grid-template-columns: 1fr;
-        grid-template-rows: 100px repeat(8, 1fr) 100px;
-        grid-template-areas:
-            "title "
-            "movie"
-            "movie"
-            "movie"
-            "movie"
-            "movie"
-            "movie"
-            "movie"
-            "movie"
-            "pagination";
-    }
-}
+        .toplist-section,
+        .search-section,
+        .favorite-section {
+            grid-template-columns: 1fr;
+            grid-template-rows: 100px repeat(8, 1fr) 100px;
+            grid-template-areas:
+                "title "
+                "movie"
+                "movie"
+                "movie"
+                "movie"
+                "movie"
+                "movie"
+                "movie"
+                "movie"
+                "pagination";
+        }
+    } }
