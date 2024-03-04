@@ -606,7 +606,7 @@ body {
 
 @media screen and (max-width: 1200px) {
     .wrapper {
-        max-width: 100%;
+        max-width: 98%;
     }
 }
 
@@ -683,7 +683,7 @@ body {
 
     .more-info-container {
    
-        width: 100%;
+        width: 98%;
         padding-top: 5rem;
         grid-template-columns: 1fr;
     }
@@ -708,7 +708,6 @@ body {
 @media screen and (max-width: 650px) {
 
     .wrapper {
-        max-width: 95%;
         padding: 0;
     }
 
@@ -766,9 +765,7 @@ body {
 
 
     @media screen and (max-width: 400px) {
-        .more-info-container {
-            left: 0;
-        }
+
         .utility-bar__notification {
             font-size: 1.2rem;
         }
