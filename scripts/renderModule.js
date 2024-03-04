@@ -254,14 +254,11 @@ function renderMoreInfo(event, result) {
 
         moreInfoContainerRef.appendChild(plotAndPosterContainerRef);
 
-        const containerRect = parentContainerRef.getBoundingClientRect();
-        const offsetX = containerRect.width / 2;
-        const offsetY = event.clientY - containerRect.top;
-
-
-        moreInfoContainerRef.style.left = `calc(50% - ${offsetX}px)`;
+        const parentRect = parentContainerRef.getBoundingClientRect();
+        const offsetY = event.clientY - parentRect.top;
+        
         moreInfoContainerRef.style.top = `${offsetY}px`;
-
+        
         parentContainerRef.appendChild(moreInfoContainerRef);
     }
 }
